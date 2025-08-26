@@ -88,3 +88,38 @@ exports.deleteNewsArticle = async ({ articleId }) => {
 
   return deletedArticle;
 };
+
+exports.getRelatedNewsArticles = async ({ articleId, limit = 3 }) => {
+  const [article] = await db
+    .select({ categoryId: articles.category_id })
+    .from(articles)
+    .where(eq(articles.id, articleId))
+    .limit(1);
+
+  if (!article) {
+    throw new Error("Article not found");
+  }
+
+  const categoryId = article.categoryId;
+
+  const relatedArticles = await db
+    .select({
+      id: articles.id,
+      title: articles.title,
+      imageCover: articles.image_cover,
+      sources: articles.sources,
+      content: articles.content,
+      publishedAt: articles.published_at,
+      updatedAt: articles.updated_at,
+      summary: articles.summary,
+    })
+    .from(articles)
+    .where(
+      eq(articles.category_id, categoryId),
+      articles.id.ne(articleId) // Excludiing the original article
+    )
+    .orderBy(desc(articles.published_at))
+    .limit(limit);
+
+  return relatedArticles;
+};

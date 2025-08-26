@@ -11,6 +11,13 @@ import GrokLogo from "@/assets/grok.png";
 
 const tools = [
   {
+    name: "24Hrs Updates",
+    desc: "Exclusive AI Created fo you.",
+    score: "100%",
+    category: "Text",
+    logo: ChatGPTLogo,
+  },
+  {
     name: "ChatGPT",
     desc: "AI chatbot for text generation.",
     score: "92%",

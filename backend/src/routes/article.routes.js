@@ -13,5 +13,6 @@ router.delete("/:id", authenticate, articleController.deleteArticle);
 
 // exposed for public access
 router.get("/", articleController.getAllArticlesByCategory);
+router.get("/:id/related", articleController.getRelatedArticles);
 
 module.exports = router;
