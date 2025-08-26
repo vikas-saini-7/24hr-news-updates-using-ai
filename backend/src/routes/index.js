@@ -5,6 +5,6 @@ const authRoutes = require("./auth.routes.js");
 const articleRoutes = require("./article.routes.js");
 
 router.use("/auth", authRoutes);
-router.use("/article", articleRoutes);
+router.use("/articles", articleRoutes);
 
 module.exports = router;

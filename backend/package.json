@@ -5,7 +5,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "categories:seed": "node src/lib/seeds/seedCategories.js",
+    "categories:get": "node src/lib/seeds/getCategories.js"
   },
   "keywords": [],
   "author": "",

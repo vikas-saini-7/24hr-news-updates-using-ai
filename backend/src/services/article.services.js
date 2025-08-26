@@ -33,6 +33,10 @@ exports.createNewsArticle = async ({
   content,
   categoryId,
 }) => {
+  if (!title || !sources || !content || !categoryId) {
+    throw new Error("Missing required fields to create an article");
+  }
+
   let summary;
   if (content) {
     summary = await summarizeContent(content);
