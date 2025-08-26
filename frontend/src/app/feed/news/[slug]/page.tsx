@@ -1,0 +1,184 @@
+"use client";
+
+import { useParams } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
+import { IconChevronLeft } from "@tabler/icons-react";
+import ArticleCard from "@/components/feed/ArticleCard";
+
+// Dummy news data (can be imported from a shared file)
+const news = [
+  {
+    id: 1,
+    title: "New AI Model Released",
+    slug: "new-ai-model-released",
+    category: "Technology",
+    summary:
+      "A new AI model has been released that outperforms previous models.",
+    content: `This AI model has been developed after years of research and
+    demonstrates significant improvements in natural language understanding,
+    image recognition, and decision-making compared to its predecessors.`,
+    image:
+      "https://i.pinimg.com/736x/ae/06/54/ae0654dfb0d0157d6c8c6c25063d0a19.jpg",
+    sources: [
+      {
+        name: "TechCrunch",
+        url: "https://techcrunch.com",
+      },
+      {
+        name: "MIT News",
+        url: "https://news.mit.edu",
+      },
+    ],
+  },
+  {
+    id: 2,
+    title: "Health Benefits of Meditation",
+    slug: "health-benefits-of-meditation",
+    category: "Health",
+    summary:
+      "Studies show that meditation can significantly improve mental health.",
+    content: `Meditation has been scientifically proven to reduce stress,
+    increase focus, and improve emotional well-being. Experts recommend
+    practicing for at least 10 minutes daily.`,
+    image:
+      "https://i.pinimg.com/736x/ae/06/54/ae0654dfb0d0157d6c8c6c25063d0a19.jpg",
+    sources: [
+      {
+        name: "Harvard Health",
+        url: "https://www.health.harvard.edu",
+      },
+      {
+        name: "NIH",
+        url: "https://www.nih.gov",
+      },
+    ],
+  },
+];
+
+const relatedArticles = [
+  {
+    id: 1,
+    title: "New AI Model Released",
+    slug: "new-ai-model-released",
+    category: "Technology",
+    summary:
+      "A new AI model has been released that outperforms previous models.",
+    image:
+      "https://i.pinimg.com/736x/ae/06/54/ae0654dfb0d0157d6c8c6c25063d0a19.jpg",
+  },
+  {
+    id: 2,
+    title: "Health Benefits of Meditation",
+    slug: "health-benefits-of-meditation",
+    category: "Health",
+    summary:
+      "Studies show that meditation can significantly improve mental health.",
+    image:
+      "https://i.pinimg.com/736x/ae/06/54/ae0654dfb0d0157d6c8c6c25063d0a19.jpg",
+  },
+  {
+    id: 3,
+    title: "Stock Market Hits Record Highs",
+    slug: "stock-market-hits-record-highs",
+    category: "Business",
+    summary:
+      "The stock market reached new record highs amid economic optimism.",
+    image:
+      "https://i.pinimg.com/736x/ae/06/54/ae0654dfb0d0157d6c8c6c25063d0a19.jpg",
+  },
+];
+
+export default function NewsDetailsPage() {
+  const { slug } = useParams();
+  const article = news.find((item) => item.slug === slug);
+
+  if (!article) {
+    return (
+      <div className="p-6 text-center text-white/70">
+        <p>Article not found.</p>
+        <Link
+          href="/feed"
+          className="mt-4 inline-block text-blue-400 hover:underline"
+        >
+          Back to News
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="overflow-y-auto h-[calc(100vh-72px)]">
+      <div className="p-6">
+        {/* Back Button */}
+        <div className="max-w-3xl mx-auto">
+          <Link
+            href="/feed"
+            className="text-blue-400 hover:underline text-sm flex items-center"
+          >
+            <IconChevronLeft className="mr-1" size={20} /> Back to News
+          </Link>
+        </div>
+
+        {/* Article Card */}
+        <div className="max-w-3xl mx-auto mt-5 p-6 rounded-2xl bg-gray-500/10 flex flex-col">
+          {/* Cover Image */}
+          <div className="w-full h-72 relative mb-6">
+            <Image
+              src={article.image}
+              alt={article.title}
+              fill
+              className="object-cover rounded-xl"
+            />
+          </div>
+
+          {/* Title */}
+          <h1 className="text-2xl font-bold text-white">{article.title}</h1>
+
+          {/* Category */}
+          <span className="mt-2 text-xs text-white/60">
+            #{article.category}
+          </span>
+
+          {/* Summary */}
+          <p className="mt-4 text-base text-white/70">{article.summary}</p>
+
+          {/* Full Content */}
+          <p className="mt-4 text-white/80 leading-relaxed whitespace-pre-line">
+            {article.content}
+          </p>
+
+          {/* Sources Section */}
+          {article.sources && (
+            <div className="mt-6">
+              <h2 className="text-lg font-semibold text-white">Sources</h2>
+              <ul className="mt-2 list-disc list-inside space-y-1">
+                {article.sources.map((src, idx) => (
+                  <li key={idx}>
+                    <a
+                      href={src.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-400 hover:underline"
+                    >
+                      {src.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+
+        <div className="mt-10 max-w-5xl mx-auto">
+          <h1>Related Articles</h1>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+            {relatedArticles.map((item, idx) => (
+              <ArticleCard key={idx} article={item} />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
