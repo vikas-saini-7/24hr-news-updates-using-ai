@@ -1,6 +1,6 @@
 const { verifyAccessToken } = require("../utils/jwt");
 
-exports.authenticate = (req, res, next) => {
+const authenticate = (req, res, next) => {
   try {
     const token = req.cookies.accessToken;
 
@@ -25,3 +25,5 @@ exports.authenticate = (req, res, next) => {
     return res.status(401).json({ success: false, message: "Invalid token." });
   }
 };
+
+module.exports = { authenticate };
