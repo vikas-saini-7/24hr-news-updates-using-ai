@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const authenticate = require("../middlewares/auth.middleware.js");
-const savedArticleController = require("../controllers/savedArticles.controller.js");
+const savedArticleController = require("../controllers/saved-articles.controller.js");
 
 // Save an article
 router.post("/", authenticate, savedArticleController.saveArticle);
