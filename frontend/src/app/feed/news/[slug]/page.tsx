@@ -9,56 +9,6 @@ import { Article } from "@/types";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-// Dummy news data (can be imported from a shared file)
-// const news = [
-//   {
-//     id: 1,
-//     title: "New AI Model Released",
-//     slug: "new-ai-model-released",
-//     category: "Technology",
-//     summary:
-//       "A new AI model has been released that outperforms previous models.",
-//     content: `This AI model has been developed after years of research and
-//     demonstrates significant improvements in natural language understanding,
-//     image recognition, and decision-making compared to its predecessors.`,
-//     image:
-//       "https://i.pinimg.com/736x/ae/06/54/ae0654dfb0d0157d6c8c6c25063d0a19.jpg",
-//     sources: [
-//       {
-//         name: "TechCrunch",
-//         url: "https://techcrunch.com",
-//       },
-//       {
-//         name: "MIT News",
-//         url: "https://news.mit.edu",
-//       },
-//     ],
-//   },
-//   {
-//     id: 2,
-//     title: "Health Benefits of Meditation",
-//     slug: "health-benefits-of-meditation",
-//     category: "Health",
-//     summary:
-//       "Studies show that meditation can significantly improve mental health.",
-//     content: `Meditation has been scientifically proven to reduce stress,
-//     increase focus, and improve emotional well-being. Experts recommend
-//     practicing for at least 10 minutes daily.`,
-//     image:
-//       "https://i.pinimg.com/736x/ae/06/54/ae0654dfb0d0157d6c8c6c25063d0a19.jpg",
-//     sources: [
-//       {
-//         name: "Harvard Health",
-//         url: "https://www.health.harvard.edu",
-//       },
-//       {
-//         name: "NIH",
-//         url: "https://www.nih.gov",
-//       },
-//     ],
-//   },
-// ];
-
 const relatedArticles = [
   {
     id: 1,
