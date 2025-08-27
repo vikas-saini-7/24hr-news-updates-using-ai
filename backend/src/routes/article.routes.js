@@ -8,10 +8,11 @@ const {
 const articleController = require("../controllers/article.controller.js");
 
 router.post("/", authenticateAI, articleController.createArticle);
-router.get("/:id", authenticate, articleController.getArticleById);
+// router.get("/:id", authenticate, articleController.getArticleById);
 router.delete("/:id", authenticate, articleController.deleteArticle);
 
 // exposed for public access
+router.get("/:slug", articleController.getArticleBySlug);
 router.get("/", articleController.getAllArticlesByCategory);
 router.get("/:id/related", articleController.getRelatedArticles);
 

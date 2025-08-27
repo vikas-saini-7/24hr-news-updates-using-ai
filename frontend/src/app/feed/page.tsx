@@ -1,9 +1,9 @@
 "use client";
 
 import ArticleCard from "@/components/feed/ArticleCard";
-import Image from "next/image";
-import Link from "next/link";
-import { useState } from "react";
+import { Article } from "@/types";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 const categories = [
   { name: "All" },
@@ -16,81 +16,26 @@ const categories = [
   { name: "Politics" },
 ];
 
-const news = [
-  {
-    id: 1,
-    title: "New AI Model Released",
-    slug: "new-ai-model-released",
-    category: "Technology",
-    summary:
-      "A new AI model has been released that outperforms previous models.",
-    image:
-      "https://i.pinimg.com/736x/ae/06/54/ae0654dfb0d0157d6c8c6c25063d0a19.jpg",
-  },
-  {
-    id: 2,
-    title: "Health Benefits of Meditation",
-    slug: "health-benefits-of-meditation",
-    category: "Health",
-    summary:
-      "Studies show that meditation can significantly improve mental health.",
-    image:
-      "https://i.pinimg.com/736x/ae/06/54/ae0654dfb0d0157d6c8c6c25063d0a19.jpg",
-  },
-  {
-    id: 3,
-    title: "Stock Market Hits Record Highs",
-    slug: "stock-market-hits-record-highs",
-    category: "Business",
-    summary:
-      "The stock market reached new record highs amid economic optimism.",
-    image:
-      "https://i.pinimg.com/736x/ae/06/54/ae0654dfb0d0157d6c8c6c25063d0a19.jpg",
-  },
-  {
-    id: 4,
-    title: "New Movie Breaks Box Office Records",
-    slug: "new-movie-breaks-box-office-records",
-    category: "Entertainment",
-    summary:
-      "The latest blockbuster movie has broken box office records worldwide.",
-    image:
-      "https://i.pinimg.com/736x/ae/06/54/ae0654dfb0d0157d6c8c6c25063d0a19.jpg",
-  },
-  {
-    id: 5,
-    title: "Local Team Wins Championship",
-    slug: "local-team-wins-championship",
-    category: "Sports",
-    summary:
-      "The local sports team has won the national championship in a thrilling final.",
-    image:
-      "https://i.pinimg.com/736x/ae/06/54/ae0654dfb0d0157d6c8c6c25063d0a19.jpg",
-  },
-  {
-    id: 6,
-    title: "New Species Discovered in Amazon",
-    slug: "new-species-discovered-in-amazon",
-    category: "Science",
-    summary:
-      "Scientists have discovered a new species of insect in the Amazon rainforest.",
-    image:
-      "https://i.pinimg.com/736x/ae/06/54/ae0654dfb0d0157d6c8c6c25063d0a19.jpg",
-  },
-  {
-    id: 7,
-    title: "Elections Coming Up Next Month",
-    slug: "elections-coming-up-next-month",
-    category: "Politics",
-    summary:
-      "Elections are scheduled for next month with several key issues at stake.",
-    image:
-      "https://i.pinimg.com/736x/ae/06/54/ae0654dfb0d0157d6c8c6c25063d0a19.jpg",
-  },
-];
-
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
+  const [news, setNews] = useState<Article[]>([]);
+
+  useEffect(() => {
+    const fetchNews = async (category: string) => {
+      try {
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles?category=${category}`
+        );
+
+        console.log("Fetched news:", res.data.data);
+
+        setNews(res.data.data);
+      } catch (error) {
+        console.error("Error fetching news:", error);
+      }
+    };
+    fetchNews(selectedCategory.name);
+  }, [selectedCategory]);
 
   return (
     <div className="p-6">

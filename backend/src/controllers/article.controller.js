@@ -4,6 +4,7 @@ const {
   getNewsArticleById,
   deleteNewsArticle,
   getRelatedNewsArticles,
+  getNewsArticleBySlug,
 } = require("../services/article.services.js");
 
 exports.getAllArticlesByCategory = async (req, res) => {
@@ -52,6 +53,26 @@ exports.getArticleById = async (req, res) => {
   try {
     const articleId = req.params.id;
     const article = await getNewsArticleById({ articleId });
+
+    res.status(200).json({
+      success: true,
+      message: "Article retrieved successfully",
+      data: article,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+exports.getArticleBySlug = async (req, res) => {
+  try {
+    const articleSlug = req.params.slug;
+    const article = await getNewsArticleBySlug({ articleSlug });
+
+    console.log("Article retrieved by slug:", article);
 
     res.status(200).json({
       success: true,

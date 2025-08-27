@@ -29,6 +29,7 @@ const categories = pgTable("categories", {
 // Article Table
 const articles = pgTable("articles", {
   id: uuid("id").defaultRandom().primaryKey(),
+  slug: varchar("slug", { length: 300 }).notNull().unique(),
   title: varchar("title", { length: 300 }).notNull(),
   image_cover: varchar("image_cover", { length: 500 }),
   sources: json("sources").notNull(),

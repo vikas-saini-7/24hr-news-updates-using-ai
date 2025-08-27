@@ -1,15 +1,7 @@
 import Image from "next/image";
 import React from "react";
 import Link from "next/link";
-
-interface Article {
-  id: number;
-  title: string;
-  slug: string;
-  category: string;
-  summary: string;
-  image: string;
-}
+import { Article } from "@/types";
 
 interface ArticleCardProps {
   article: Article;
@@ -21,7 +13,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
       {/* Cover Image */}
       <div className="w-full h-40 relative mb-3 aspect-video">
         <Image
-          src={article.image}
+          src="https://i.pinimg.com/736x/ae/06/54/ae0654dfb0d0157d6c8c6c25063d0a19.jpg"
           alt={article.title}
           fill
           className="object-cover rounded-xl"
