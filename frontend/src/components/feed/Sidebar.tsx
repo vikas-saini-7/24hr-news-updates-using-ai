@@ -14,6 +14,7 @@ import {
   IconBookmark,
   IconUser,
   IconUserCircle,
+  IconLogin,
 } from "@tabler/icons-react";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -51,10 +52,11 @@ const bottomNavigations: NavItem[] = [
     icon: IconUserCircle,
     isPrivate: true,
   },
+  { name: "Login", href: "/login", icon: IconLogin, hideWhenLoggedIn: true },
 ];
 
 const Sidebar = () => {
-  const { user } = useAuth();
+  const { user, logoutUser } = useAuth();
   const [sidebarOpen, setSidebarOpen] = React.useState(true);
   const pathname = usePathname();
 
@@ -71,6 +73,12 @@ const Sidebar = () => {
         ? "bg-gray-500/10 text-white font-medium"
         : "text-white/60 hover:bg-gray-500/10 hover:text-white"
     }`;
+  };
+
+  const handleLogout = () => {
+    const confirmLogout = window.confirm("Are you sure you want to logout?");
+    if (!confirmLogout) return;
+    logoutUser();
   };
 
   return (
@@ -127,14 +135,12 @@ const Sidebar = () => {
               </li>
             ))}
           {user && (
-            <li>
-              <a
-                className="flex items-center gap-3 py-2 px-4 rounded-xl text-white/60 text-sm transition hover:bg-red-500/10 hover:text-red-500 cursor-pointer"
-                href="#"
-              >
-                <IconLogout size={20} stroke={1.5} />
-                Logout
-              </a>
+            <li
+              className="flex items-center gap-3 py-2 px-4 rounded-xl text-white/60 text-sm transition hover:bg-red-500/10 hover:text-red-500 cursor-pointer"
+              onClick={handleLogout}
+            >
+              <IconLogout size={20} stroke={1.5} />
+              Logout
             </li>
           )}
         </ul>

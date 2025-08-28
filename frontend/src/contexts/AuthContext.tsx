@@ -9,10 +9,12 @@ const AuthContext = createContext<{
   user: User | null;
   loading: boolean;
   setUser: (u: User | null) => void;
+  logoutUser: () => void;
 }>({
   user: null,
   loading: true,
   setUser: () => {},
+  logoutUser: () => {},
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -36,12 +38,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     loadUser();
   }, []);
 
+  const logoutUser = async () => {
+    try {
+      await axios.post(
+        `${API_BASE}/api/auth/logout`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+      setUser(null);
+    } catch (err) {
+      console.error("Logout failed", err);
+    }
+  };
+
   if (loading) {
     return null;
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, setUser }}>
+    <AuthContext.Provider value={{ user, loading, setUser, logoutUser }}>
       {children}
     </AuthContext.Provider>
   );
