@@ -1,9 +1,9 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import ArticleCard from "@/components/feed/ArticleCard";
 import { Article } from "@/types";
 import axios from "axios";
-import { useEffect, useState } from "react";
 
 const categories = [
   { name: "All" },
