@@ -19,21 +19,24 @@ const categories = [
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
   const [news, setNews] = useState<Article[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchNews = async (category: string) => {
       try {
+        setLoading(true);
         const res = await axios.get(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles?category=${category}`
         );
-
-        // console.log("Fetched news:", res.data.data);
-
         setNews(res.data.data);
       } catch (error) {
         console.error("Error fetching news:", error);
+        setNews([]);
+      } finally {
+        setLoading(false);
       }
     };
+
     fetchNews(selectedCategory.name);
   }, [selectedCategory]);
 
@@ -58,9 +61,19 @@ export default function Home() {
 
       {/* News content */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
-        {news.map((item) => (
-          <ArticleCard key={item.id} article={item} />
-        ))}
+        {loading ? (
+          // Simple skeleton loader
+          Array.from({ length: 8 }).map((_, idx) => (
+            <div
+              key={idx}
+              className="h-40 bg-gray-500/10 animate-pulse rounded-xl"
+            />
+          ))
+        ) : news.length > 0 ? (
+          news.map((item) => <ArticleCard key={item.id} article={item} />)
+        ) : (
+          <p className="text-white/70">No news found.</p>
+        )}
       </div>
     </div>
   );

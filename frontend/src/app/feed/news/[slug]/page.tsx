@@ -45,26 +45,43 @@ const relatedArticles = [
 export default function NewsDetailsPage() {
   const { slug } = useParams<{ slug: string }>();
   const [article, setArticle] = useState<Article | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchArticle = async (slug: string) => {
+      setLoading(true);
+      setError(null);
       try {
         const res = await axios.get(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/${slug}`
         );
-        console.log("Fetched article:", res.data);
         setArticle(res.data.data);
-      } catch (error) {
-        console.error("Error fetching article:", error);
+      } catch (err) {
+        console.error("Error fetching article:", err);
+        setError("Failed to load article.");
+      } finally {
+        setLoading(false);
       }
     };
-    fetchArticle(slug);
+
+    if (slug) {
+      fetchArticle(slug);
+    }
   }, [slug]);
 
-  if (!article) {
+  if (loading) {
+    return (
+      <div className="p-6 text-center text-white/70 min-h-72 flex items-center justify-center">
+        <p>Loading article...</p>
+      </div>
+    );
+  }
+
+  if (error || !article) {
     return (
       <div className="p-6 text-center text-white/70">
-        <p>Article not found.</p>
+        <p>{error || "Article not found."}</p>
         <Link
           href="/feed"
           className="mt-4 inline-block text-blue-400 hover:underline"
@@ -138,8 +155,9 @@ export default function NewsDetailsPage() {
           )}
         </div>
 
+        {/* Related Articles */}
         <div className="mt-10 max-w-5xl mx-auto">
-          <h1>Related Articles</h1>
+          <h1 className="text-xl font-semibold text-white">Related Articles</h1>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
             {relatedArticles.map((item, idx) => (
               <ArticleCard key={idx} article={item} />
