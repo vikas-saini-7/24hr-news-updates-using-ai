@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Header from "@/components/common/Header";
-import Hero from "@/components/home/Hero";
+import Hero from "@/components/landing/HeroSection";
 import Sidebar from "@/components/feed/Sidebar";
 import FeedHeader from "@/components/feed/FeedHeader";
 
