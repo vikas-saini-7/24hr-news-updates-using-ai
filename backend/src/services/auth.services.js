@@ -41,7 +41,18 @@ exports.registerUser = async ({ name, email, password }) => {
     })
     .returning();
 
-  return user;
+  // 3. Create JWT tokens
+  const payload = {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    avatar: user.avatar,
+  };
+
+  const accessToken = createAccessToken(payload);
+  const refreshToken = createRefreshToken(payload);
+
+  return { user, accessToken, refreshToken };
 };
 
 /**

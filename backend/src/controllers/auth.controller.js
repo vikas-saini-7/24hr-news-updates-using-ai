@@ -9,9 +9,23 @@ const {
 exports.register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
-    const user = await registerUser({ name, email, password });
+    const { user, accessToken, refreshToken } = await registerUser({
+      name,
+      email,
+      password,
+    });
 
     const { password: _, ...safeUser } = user;
+
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      sameSite: "strict",
+    });
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      sameSite: "strict",
+    });
 
     res.status(201).json({
       success: true,
@@ -36,6 +50,7 @@ exports.login = async (req, res) => {
       email,
       password,
     });
+    
     const { password: _, ...safeUser } = user;
 
     res.cookie("accessToken", accessToken, {

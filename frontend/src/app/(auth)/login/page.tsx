@@ -23,7 +23,6 @@ const Page = () => {
     try {
       const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-      console.log("Logging in with:", { email, password });
       const res = await axios.post(
         `${API_BASE}/api/auth/login`,
         { email, password },
