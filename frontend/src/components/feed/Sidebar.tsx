@@ -12,22 +12,49 @@ import {
   IconCaretLeftFilled,
   IconFlame,
   IconBookmark,
+  IconUser,
+  IconUserCircle,
 } from "@tabler/icons-react";
+import { useAuth } from "@/contexts/AuthContext";
 
-const navigations = [
+type NavItem = {
+  name: string;
+  href: string;
+  icon: React.ComponentType<{ size?: number; stroke?: number }>;
+  isPrivate?: boolean;
+  hideWhenLoggedIn?: boolean; // only show when logged out
+};
+
+const navigations: NavItem[] = [
   { name: "Feed", href: "/feed", icon: IconHome },
   { name: "AI Summary", href: "/feed/ai-summary", icon: IconArticle },
   { name: "Top Stories", href: "/feed/top-stories", icon: IconFlame },
-  { name: "Saved Articles", href: "/feed/saved", icon: IconBookmark },
+  {
+    name: "Saved Articles",
+    href: "/feed/saved",
+    icon: IconBookmark,
+    isPrivate: true,
+  },
 ];
 
-const bottomNavigations = [
-  { name: "About", href: "/about", icon: IconInfoCircle },
-  { name: "Contact", href: "/contact", icon: IconMail },
-  { name: "Settings", href: "/feed/settings", icon: IconSettings },
+const bottomNavigations: NavItem[] = [
+  {
+    name: "About",
+    href: "/about",
+    icon: IconInfoCircle,
+    hideWhenLoggedIn: true,
+  },
+  { name: "Contact", href: "/contact", icon: IconMail, hideWhenLoggedIn: true },
+  {
+    name: "Profile",
+    href: "/feed/profile",
+    icon: IconUserCircle,
+    isPrivate: true,
+  },
 ];
 
 const Sidebar = () => {
+  const { user } = useAuth();
   const [sidebarOpen, setSidebarOpen] = React.useState(true);
   const pathname = usePathname();
 
@@ -68,14 +95,16 @@ const Sidebar = () => {
         <div className="mb-6 mt-2 px-4 font-bold">LOGO</div>
         <nav>
           <ul>
-            {navigations.map((item) => (
-              <li key={item.name}>
-                <Link href={item.href} className={linkClasses(item.href)}>
-                  <item.icon size={20} stroke={1.5} />
-                  {item.name}
-                </Link>
-              </li>
-            ))}
+            {navigations
+              .filter((item) => (item.isPrivate ? user : true))
+              .map((item) => (
+                <li key={item.name}>
+                  <Link href={item.href} className={linkClasses(item.href)}>
+                    <item.icon size={20} stroke={1.5} />
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
           </ul>
         </nav>
       </div>
@@ -83,23 +112,31 @@ const Sidebar = () => {
       {/* Bottom section */}
       <nav>
         <ul>
-          {bottomNavigations.map((item) => (
-            <li key={item.name}>
-              <Link href={item.href} className={linkClasses(item.href)}>
-                <item.icon size={20} stroke={1.5} />
-                {item.name}
-              </Link>
+          {bottomNavigations
+            .filter((item) => {
+              if (item.isPrivate && !user) return false; // needs login
+              if (item.hideWhenLoggedIn && user) return false; // hide if logged in
+              return true;
+            })
+            .map((item) => (
+              <li key={item.name}>
+                <Link href={item.href} className={linkClasses(item.href)}>
+                  <item.icon size={20} stroke={1.5} />
+                  {item.name}
+                </Link>
+              </li>
+            ))}
+          {user && (
+            <li>
+              <a
+                className="flex items-center gap-3 py-2 px-4 rounded-xl text-white/60 text-sm transition hover:bg-red-500/10 hover:text-red-500 cursor-pointer"
+                href="#"
+              >
+                <IconLogout size={20} stroke={1.5} />
+                Logout
+              </a>
             </li>
-          ))}
-          <li>
-            <a
-              className="flex items-center gap-3 py-2 px-4 rounded-xl text-white/60 text-sm transition hover:bg-red-500/10 hover:text-red-500 cursor-pointer"
-              href="#"
-            >
-              <IconLogout size={20} stroke={1.5} />
-              Logout
-            </a>
-          </li>
+          )}
         </ul>
       </nav>
     </div>

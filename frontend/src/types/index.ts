@@ -8,3 +8,10 @@ export interface Article {
   content?: string;
   sources?: { name: string; url: string }[];
 }
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  avatar: string;
+}

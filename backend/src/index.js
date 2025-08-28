@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const morgan = require("morgan");
 const helmet = require("helmet");
+const cookieParser = require("cookie-parser");
 
 const apiRoutes = require("./routes/index.js");
 
@@ -11,11 +12,17 @@ const app = express();
 
 // middlewares
 app.use(express.json());
+app.use(cookieParser());
 app.use(helmet());
 app.use(morgan("tiny"));
-app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
 
 app.use("/api", apiRoutes);
 

@@ -15,8 +15,10 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
         <Image
           src="https://i.pinimg.com/736x/ae/06/54/ae0654dfb0d0157d6c8c6c25063d0a19.jpg"
           alt={article.title}
-          fill
+          // fill
           className="object-cover rounded-xl"
+          height={500}
+          width={500}
         />
       </div>
 

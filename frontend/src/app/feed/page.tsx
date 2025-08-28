@@ -27,7 +27,7 @@ export default function Home() {
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles?category=${category}`
         );
 
-        console.log("Fetched news:", res.data.data);
+        // console.log("Fetched news:", res.data.data);
 
         setNews(res.data.data);
       } catch (error) {
