@@ -9,7 +9,7 @@ const page = () => {
         <div>
           <h1 className="text-2xl mb-4">About Us</h1>
           <p className="text-white/50">
-            24Hrs Updates is dedicated to keeping you informed with the latest
+            This platform is dedicated to keeping you informed with the latest
             news and developments from around the world. In today’s fast-paced
             digital age, staying updated is more important than ever, and our
             platform is designed to deliver real-time information from trusted
