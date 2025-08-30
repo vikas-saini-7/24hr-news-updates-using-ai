@@ -6,7 +6,7 @@ const slugify = require("slugify");
 // utils
 const { summarizeContent } = require("../utils/ai-based/summarizeContent.js");
 
-exports.getArticlesByCategory = async ({ category, limit = 10 }) => {
+exports.getArticlesByCategory = async ({ category, limit = 100 }) => {
   let query = db
     .select({
       id: articles.id,

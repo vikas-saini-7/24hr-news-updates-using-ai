@@ -6,6 +6,8 @@ const morgan = require("morgan");
 const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
 
+const { runWorker } = require("./jobs/seed-articles.js");
+
 const apiRoutes = require("./routes/index.js");
 
 const app = express();
@@ -29,6 +31,8 @@ app.use("/api", apiRoutes);
 app.get("/api/test", (req, res) => {
   res.status(200).json({ message: "API is working!" });
 });
+
+runWorker();
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {

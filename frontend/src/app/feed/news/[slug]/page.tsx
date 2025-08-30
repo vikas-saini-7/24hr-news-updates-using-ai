@@ -146,7 +146,7 @@ export default function NewsDetailsPage() {
                       rel="noopener noreferrer"
                       className="text-blue-400 hover:underline"
                     >
-                      {src.name}
+                      {src.name || src.url}
                     </a>
                   </li>
                 ))}
