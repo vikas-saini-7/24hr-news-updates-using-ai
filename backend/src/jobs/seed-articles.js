@@ -3,90 +3,148 @@ const axios = require("axios");
 const Parser = require("rss-parser");
 const slugify = require("slugify");
 const { db } = require("../lib/db");
-const { articles } = require("../lib/schema");
+const { articles, categories } = require("../lib/schema");
 const { detectCategory } = require("../lib/category");
-const { sql } = require("drizzle-orm");
+const { eq } = require("drizzle-orm");
 
-const parser = new Parser();
+const parser = new Parser({
+  customFields: {
+    item: [
+      ["description", "description"],
+      ["source", "source"],
+    ],
+  },
+});
+
+function cleanHTML(html) {
+  if (!html) return "";
+
+  // Replace deprecated <font> tags with <span> and CSS classes
+  let cleanedHTML = html
+    .replace(/<font color="#6f6f6f">/g, '<span class="text-gray-500">')
+    .replace(/<\/font>/g, "</span>")
+    // You can add more replacements as needed
+    .replace(/&nbsp;&nbsp;/g, " ") // Replace double non-breaking spaces
+    .trim();
+
+  return cleanedHTML;
+}
+
+function parseGoogleRSSDescription(description) {
+  if (!description) return { sources: [], cleanHTML: "" };
+
+  const sources = [];
+  const sourceRegex =
+    /<a href="([^"]+)"[^>]*>([^<]+)<\/a>&nbsp;&nbsp;<font color="#6f6f6f">([^<]+)<\/font>/g;
+  let match;
+
+  while ((match = sourceRegex.exec(description)) !== null) {
+    const [, url, title, sourceName] = match;
+    sources.push({
+      url: url,
+      title: title.trim(),
+      sourceName: sourceName.trim(),
+    });
+  }
+
+  return {
+    sources: sources,
+    cleanHTML: cleanHTML(description),
+    mainSource: sources[0]?.sourceName || "Google News",
+  };
+}
 
 // 📰 RSS Feeds
-const RSS_FEEDS = [
-  "https://www.thehindu.com/feeder/default.rss",
-  "https://feeds.feedburner.com/ndtvnews-top-stories",
-];
-
-// 🔑 NewsData.io API
-const NEWSDATA_API = "https://newsdata.io/api/1/news";
-const NEWSDATA_KEY = process.env.NEWSDATA_KEY;
+const RSS_FEEDS = ["https://news.google.com/rss?hl=en-IN&gl=IN&ceid=IN:en"];
 
 async function fetchRSS() {
   let allArticles = [];
+  const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
   for (const url of RSS_FEEDS) {
     try {
       const feed = await parser.parseURL(url);
 
-      feed.items.forEach((item) => {
-        const article = {
-          slug: slugify(item.link || item.title, { lower: true, strict: true }),
+      for (const item of feed.items) {
+        // Generate slug
+        const slug = slugify(item.title, { lower: true, strict: true });
+        // Some feeds have <media:content>
+
+        const mediaContent = item["media:content"]?.[0]?.["$"]?.url || null;
+
+        const parsedContent = parseGoogleRSSDescription(item.description);
+
+        const publishedDate = new Date(item.pubDate);
+
+        // Skip articles older than 24 hours
+        if (publishedDate < twentyFourHoursAgo) {
+          continue;
+        }
+
+        // Get category ID if category is detected
+        let categoryId = null;
+        const catName = detectCategory({
           title: item.title,
-          image_cover: item.enclosure?.url || null,
-          sources: [{ url: item.link, name: item.source || "RSS Feed" }],
-          feedCategory: item.category || "", // keep original
-          category_id: null,
-          content: item.contentSnippet || "",
+          content: parsedContent.cleanHTML,
+        });
+
+        // Skip if no category is detected
+        if (!catName) {
+          continue;
+        }
+
+        if (catName) {
+          try {
+            const categoryResult = await db
+              .select({ id: categories.id })
+              .from(categories)
+              .where(eq(categories.name, catName))
+              .limit(1);
+
+            if (categoryResult.length > 0) {
+              categoryId = categoryResult[0].id;
+            }
+          } catch (err) {
+            console.error("Category fetch error:", err.message);
+          }
+        }
+
+        // Create sources array with just URLs from parsed content
+        const sourcesArray = [];
+
+        // Only add sources from parsed content (actual article URLs, not Google redirects)
+        if (parsedContent.sources && parsedContent.sources.length > 0) {
+          parsedContent.sources.forEach((source) => {
+            if (source.url && !sourcesArray.includes(source.url)) {
+              sourcesArray.push(source.url);
+            }
+          });
+        }
+
+        // Debug log to see what we're storing
+        // console.log("Sources array:", sourcesArray);
+
+        const article = {
+          slug: slug,
+          title: item.title,
+          image_cover: mediaContent,
+          sources: sourcesArray, // Store as array directly (not stringified)
+          category_id: categoryId,
+          content: parsedContent.cleanHTML,
           summary: null,
-          published_at: new Date(item.pubDate || Date.now()),
-          updated_at: new Date(),
+          published_at: publishedDate,
         };
 
-        // detect category
-        const catName = detectCategory(article);
-        if (catName)
-          article.category_id = sql`(
-          SELECT id FROM categories WHERE name = ${catName} LIMIT 1
-        )`;
-
-        allArticles.push(article);
-      });
+        // Only push if required fields are present
+        if (article.title && article.content && sourcesArray.length > 0) {
+          allArticles.push(article);
+        }
+      }
     } catch (err) {
       console.error("RSS fetch error:", err.message);
     }
   }
-  return allArticles.slice(0, 2);
-}
-
-async function fetchAPI() {
-  try {
-    const res = await axios.get(NEWSDATA_API, {
-      params: { apikey: NEWSDATA_KEY, country: "in", language: "en" },
-    });
-
-    return res.data.results.map((item) => {
-      const article = {
-        slug: slugify(item.link || item.title, { lower: true, strict: true }),
-        title: item.title,
-        image_cover: item.image_url || null,
-        sources: { type: "api", source_id: item.source_id },
-        feedCategory: item.category || "",
-        category_id: null,
-        content: item.content || "",
-        summary: null,
-        published_at: new Date(item.pubDate || Date.now()),
-        updated_at: new Date(),
-      };
-
-      const catName = detectCategory(article);
-      if (catName)
-        article.category_id = sql`(
-        SELECT id FROM categories WHERE name = ${catName} LIMIT 1
-      )`;
-
-      return article.slice(0, 2);
-    });
-  } catch (err) {
-    console.error("API fetch error:", err.message);
-    return [];
-  }
+  return allArticles.slice(0, 15);
 }
 
 async function saveArticles(articlesList) {
@@ -107,10 +165,11 @@ async function saveArticles(articlesList) {
 async function runWorker() {
   console.log("🚀 Fetching news...");
   const rssArticles = await fetchRSS();
-  const apiArticles = await fetchAPI();
-  const all = [...rssArticles, ...apiArticles]; // merge with api if needed
 
-  await saveArticles(all);
+  console.log(rssArticles);
+  console.log(`Fetched ${rssArticles.length} articles.`);
+
+  await saveArticles(rssArticles);
   console.log("✅ News sync complete.");
 }
 

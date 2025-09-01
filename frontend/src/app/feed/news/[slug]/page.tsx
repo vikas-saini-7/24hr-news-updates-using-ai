@@ -138,15 +138,16 @@ export default function NewsDetailsPage() {
             <div className="mt-6">
               <h2 className="text-lg font-semibold text-white">Sources</h2>
               <ul className="mt-2 list-disc list-inside space-y-1">
-                {article.sources.map((src, idx) => (
+                {article.sources.slice(0, 2).map((src, idx) => (
                   <li key={idx}>
                     <a
-                      href={src.url}
+                      href={src}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-400 hover:underline"
                     >
-                      {src.name || src.url}
+                      {/* {src || src.url} */}
+                      Google Feed
                     </a>
                   </li>
                 ))}

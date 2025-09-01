@@ -2,6 +2,7 @@ import Image from "next/image";
 import React from "react";
 import Link from "next/link";
 import { Article } from "@/types";
+import placeHolderNewsImage from "@/assets/placeholder-news.png";
 
 interface ArticleCardProps {
   article: Article;
@@ -13,7 +14,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
       {/* Cover Image */}
       <div className="w-full h-40 relative mb-3 aspect-video">
         <Image
-          src="https://i.pinimg.com/736x/ae/06/54/ae0654dfb0d0157d6c8c6c25063d0a19.jpg"
+          src={article.image_cover || placeHolderNewsImage}
           alt={article.title}
           // fill
           className="object-cover rounded-xl"

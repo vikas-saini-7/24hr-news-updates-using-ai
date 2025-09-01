@@ -14,6 +14,7 @@ const categories = [
   { name: "Sports" },
   { name: "Science" },
   { name: "Politics" },
+  { name: "World" },
 ];
 
 export default function Home() {
