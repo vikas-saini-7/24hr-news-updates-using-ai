@@ -6,8 +6,10 @@ const morgan = require("morgan");
 const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
 
-const { runRSSWorker } = require("./jobs/seed-articles-rss.js");
-const { runAPIWorker } = require("./jobs/seed-articles-api.js");
+// background cron jobs
+// const { runRSSWorker } = require("./jobs/seed-articles-rss.js");
+// const { runAPIWorker } = require("./jobs/seed-articles-api.js");
+require("./jobs/daily-report-mail.js");
 
 const apiRoutes = require("./routes/index.js");
 

@@ -2,7 +2,7 @@ const { fetchProfile } = require("../services/profile.service.js");
 
 exports.getProfile = async (req, res) => {
   try {
-    console.log(req.user);
+    // console.log(req.user);
     const userId = req.user.id; // Assuming user ID is available in req.user
     const profile = await fetchProfile({ userId });
 
