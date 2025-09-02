@@ -19,12 +19,12 @@ exports.register = async (req, res) => {
 
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      sameSite: "strict",
+      sameSite: "None",
     });
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      sameSite: "strict",
+      sameSite: "None",
     });
 
     res.status(201).json({
@@ -50,17 +50,17 @@ exports.login = async (req, res) => {
       email,
       password,
     });
-    
+
     const { password: _, ...safeUser } = user;
 
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      sameSite: "strict",
+      sameSite: "None",
     });
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      sameSite: "strict",
+      sameSite: "None",
     });
 
     res.status(200).json({
@@ -84,7 +84,7 @@ exports.refresh = async (req, res) => {
     const { newAccessToken } = await refreshAccessToken({ token });
     res.cookie("accessToken", newAccessToken, {
       httpOnly: true,
-      sameSite: "strict",
+      sameSite: "None",
     });
     res.status(200).json({ success: true, message: "Token Refreshed!" });
   } catch (error) {
@@ -101,8 +101,8 @@ exports.logout = async (req, res) => {
   try {
     logoutUser();
 
-    res.clearCookie("accessToken", { httpOnly: true, sameSite: "strict" });
-    res.clearCookie("refreshToken", { httpOnly: true, sameSite: "strict" });
+    res.clearCookie("accessToken", { httpOnly: true, sameSite: "None" });
+    res.clearCookie("refreshToken", { httpOnly: true, sameSite: "None" });
 
     res.status(200).json({
       success: true,
