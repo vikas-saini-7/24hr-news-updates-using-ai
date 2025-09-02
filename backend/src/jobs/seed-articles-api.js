@@ -117,15 +117,19 @@ async function saveArticles(articlesList) {
     console.error("DB insert error:", err.message);
   }
 }
-
 async function runAPIWorker() {
   console.log("🚀 Fetching news...");
-  const newsArticles = await fetchNews("general");
 
-  console.log(`Fetched ${newsArticles.length} fresh articles from API.`);
-  await saveArticles(newsArticles);
+  try {
+    const newsArticles = await fetchNews("general");
+    console.log(`Fetched ${newsArticles.length} fresh articles from API.`);
 
-  console.log("✅ News sync complete.");
+    await saveArticles(newsArticles);
+
+    console.log("✅ News sync complete.");
+  } catch (err) {
+    console.error("❌ runAPIWorker failed:", err.message, err.stack);
+  }
 }
 
 // Run every 15 minutes

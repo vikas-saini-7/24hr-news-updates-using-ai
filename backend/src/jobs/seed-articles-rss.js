@@ -189,13 +189,15 @@ async function saveArticles(articlesList) {
 
 async function runRSSWorker() {
   console.log("🚀 Fetching news...");
-  const rssArticles = await fetchRSS();
+  try {
+    const rssArticles = await fetchRSS();
+    console.log(`Fetched ${rssArticles.length} articles from rss feeds.`);
 
-  // console.log(rssArticles);
-  console.log(`Fetched ${rssArticles.length} articles from rss feeds.`);
-
-  await saveArticles(rssArticles);
-  console.log("✅ News sync complete.");
+    await saveArticles(rssArticles);
+    console.log("✅ News sync complete.");
+  } catch (err) {
+    console.error("Worker error:", err.message);
+  }
 }
 
 // Run every 10 minutes
