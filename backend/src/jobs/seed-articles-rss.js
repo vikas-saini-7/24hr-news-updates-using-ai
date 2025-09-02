@@ -194,7 +194,7 @@ async function runRSSWorker() {
   // console.log(rssArticles);
   console.log(`Fetched ${rssArticles.length} articles from rss feeds.`);
 
-  // await saveArticles(rssArticles);
+  await saveArticles(rssArticles);
   console.log("✅ News sync complete.");
 }
 

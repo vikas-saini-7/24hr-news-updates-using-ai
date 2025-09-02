@@ -33,7 +33,7 @@ app.get("/api/test", (req, res) => {
   res.status(200).json({ message: "API is working!" });
 });
 
-runRSSWorker();
+// runRSSWorker();
 // runAPIWorker();
 
 const PORT = process.env.PORT || 8000;
