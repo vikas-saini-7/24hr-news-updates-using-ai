@@ -108,6 +108,7 @@ exports.deleteArticle = async (req, res) => {
 exports.getRelatedArticles = async (req, res) => {
   try {
     const articleId = req.params.id;
+    const { limit } = req.query;
     const relatedArticles = await getRelatedNewsArticles({
       articleId,
       limit,

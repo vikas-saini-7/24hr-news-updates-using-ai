@@ -11,42 +11,43 @@ import axios from "axios";
 
 import placeHolderNewsImage from "@/assets/placeholder-news.png";
 
-const relatedArticles = [
-  {
-    id: 1,
-    title: "New AI Model Released",
-    slug: "new-ai-model-released",
-    category: "Technology",
-    summary:
-      "A new AI model has been released that outperforms previous models.",
-    image:
-      "https://i.pinimg.com/736x/ae/06/54/ae0654dfb0d0157d6c8c6c25063d0a19.jpg",
-  },
-  {
-    id: 2,
-    title: "Health Benefits of Meditation",
-    slug: "health-benefits-of-meditation",
-    category: "Health",
-    summary:
-      "Studies show that meditation can significantly improve mental health.",
-    image:
-      "https://i.pinimg.com/736x/ae/06/54/ae0654dfb0d0157d6c8c6c25063d0a19.jpg",
-  },
-  {
-    id: 3,
-    title: "Stock Market Hits Record Highs",
-    slug: "stock-market-hits-record-highs",
-    category: "Business",
-    summary:
-      "The stock market reached new record highs amid economic optimism.",
-    image:
-      "https://i.pinimg.com/736x/ae/06/54/ae0654dfb0d0157d6c8c6c25063d0a19.jpg",
-  },
-];
+// const relatedArticles = [
+//   {
+//     id: 1,
+//     title: "New AI Model Released",
+//     slug: "new-ai-model-released",
+//     category: "Technology",
+//     summary:
+//       "A new AI model has been released that outperforms previous models.",
+//     image:
+//       "https://i.pinimg.com/736x/ae/06/54/ae0654dfb0d0157d6c8c6c25063d0a19.jpg",
+//   },
+//   {
+//     id: 2,
+//     title: "Health Benefits of Meditation",
+//     slug: "health-benefits-of-meditation",
+//     category: "Health",
+//     summary:
+//       "Studies show that meditation can significantly improve mental health.",
+//     image:
+//       "https://i.pinimg.com/736x/ae/06/54/ae0654dfb0d0157d6c8c6c25063d0a19.jpg",
+//   },
+//   {
+//     id: 3,
+//     title: "Stock Market Hits Record Highs",
+//     slug: "stock-market-hits-record-highs",
+//     category: "Business",
+//     summary:
+//       "The stock market reached new record highs amid economic optimism.",
+//     image:
+//       "https://i.pinimg.com/736x/ae/06/54/ae0654dfb0d0157d6c8c6c25063d0a19.jpg",
+//   },
+// ];
 
 export default function NewsDetailsPage() {
   const { slug } = useParams<{ slug: string }>();
   const [article, setArticle] = useState<Article | null>(null);
+  const [relatedArticles, setRelatedArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -71,6 +72,23 @@ export default function NewsDetailsPage() {
       fetchArticle(slug);
     }
   }, [slug]);
+
+  useEffect(() => {
+    const fetchRelatedArticles = async () => {
+      if (!article) return;
+
+      try {
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/${article.id}/related`
+        );
+        setRelatedArticles(res.data.data);
+      } catch (err) {
+        console.error("Error fetching related articles:", err);
+      }
+    };
+
+    fetchRelatedArticles();
+  }, [article]);
 
   if (loading) {
     return (

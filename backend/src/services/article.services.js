@@ -1,4 +1,4 @@
-const { eq, desc } = require("drizzle-orm");
+const { eq, desc, ne } = require("drizzle-orm");
 const { db } = require("../lib/db.js");
 const { articles, categories } = require("../lib/schema");
 const slugify = require("slugify");
@@ -177,11 +177,13 @@ exports.getRelatedNewsArticles = async ({ articleId, limit = 3 }) => {
       publishedAt: articles.published_at,
       updatedAt: articles.updated_at,
       summary: articles.summary,
+      category: categories.name,
     })
     .from(articles)
+    .leftJoin(categories, eq(articles.category_id, categories.id))
     .where(
       eq(articles.category_id, categoryId),
-      articles.id.ne(articleId) // Excludiing the original article
+      ne(articles.id, articleId) // Use 'ne' function instead of articles.id.ne
     )
     .orderBy(desc(articles.published_at))
     .limit(limit);
