@@ -7,7 +7,7 @@ interface FeedHeaderProps {
 
 const FeedHeader: React.FC<FeedHeaderProps> = ({ onToggleView }) => {
   return (
-    <div className="bg-gray-500/10 sticky top-0 z-10 backdrop-blur-lg">
+    <div className="bg-gray-500/10 sticky top-0 z-10 backdrop-blur-md">
       <header className="container mx-auto p-4 flex justify-between items-center">
         {/* <div>Logo</div> */}
         <div></div>

@@ -27,7 +27,9 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
 
       {/* Title + Summary (flex-1 pushes footer down) */}
       <div className="flex-1 mt-2">
-        <h3 className="text-lg font-semibold text-white">{article.title}</h3>
+        <h3 className="text-lg font-semibold text-white">
+          {article.title.slice(0, 50)}...
+        </h3>
         {/* <p className="text-sm text-white/60 mt-2">{article.summary}</p> */}
       </div>
 
