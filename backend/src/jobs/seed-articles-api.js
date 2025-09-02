@@ -20,7 +20,7 @@ async function fetchNews(category = "general") {
         token: NEWS_API_KEY,
         category,
         lang: "en",
-        country: "us",
+        country: "in",
         max: 20, // limit
       },
     });

@@ -72,7 +72,7 @@ exports.getArticleBySlug = async (req, res) => {
     const articleSlug = req.params.slug;
     const article = await getNewsArticleBySlug({ articleSlug });
 
-    console.log("Article retrieved by slug:", article);
+    // console.log("Article retrieved by slug:", article);
 
     res.status(200).json({
       success: true,

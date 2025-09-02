@@ -193,7 +193,7 @@ async function runRSSWorker() {
     const rssArticles = await fetchRSS();
     console.log(`Fetched ${rssArticles.length} articles from rss feeds.`);
 
-    await saveArticles(rssArticles);
+    // await saveArticles(rssArticles);
     console.log("✅ News sync complete.");
   } catch (err) {
     console.error("Worker error:", err.message);
