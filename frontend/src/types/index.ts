@@ -7,6 +7,7 @@ export interface Article {
   imageCover?: string;
   content?: string;
   sources?: { name: string; url: string }[];
+  isSaved?: boolean;
 }
 
 export interface User {

@@ -27,7 +27,10 @@ export default function Home() {
       try {
         setLoading(true);
         const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles?category=${category}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles?category=${category}`,
+          {
+            withCredentials: true,
+          }
         );
         setNews(res.data.data);
       } catch (error) {

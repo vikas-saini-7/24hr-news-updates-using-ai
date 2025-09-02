@@ -10,10 +10,14 @@ const authenticate = (req, res, next) => {
         .status(401)
         .json({ success: false, message: "Access denied. No token provided." });
     }
+    let decoded;
+    if (token) {
+      decoded = verifyAccessToken(token);
+    }
 
-    const decoded = verifyAccessToken(token);
-
-    req.user = decoded;
+    if (decoded) {
+      req.user = decoded;
+    }
 
     next();
   } catch (error) {
@@ -25,6 +29,23 @@ const authenticate = (req, res, next) => {
       });
     }
     return res.status(401).json({ success: false, message: "Invalid token." });
+  }
+};
+
+const authenticateOptional = (req, res, next) => {
+  try {
+    const token = req.cookies?.accessToken;
+    if (!token) {
+      req.user = null;
+      return next();
+    }
+
+    const decoded = verifyAccessToken(token);
+    req.user = decoded || null;
+    return next();
+  } catch {
+    req.user = null;
+    return next();
   }
 };
 
@@ -44,4 +65,4 @@ const authenticateAI = (req, res, next) => {
   }
 };
 
-module.exports = { authenticate, authenticateAI };
+module.exports = { authenticate, authenticateOptional, authenticateAI };

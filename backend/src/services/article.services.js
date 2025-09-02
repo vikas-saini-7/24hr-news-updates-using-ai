@@ -1,12 +1,12 @@
-const { eq, desc, ne, asc } = require("drizzle-orm");
+const { eq, desc, ne, asc, sql } = require("drizzle-orm");
 const { db } = require("../lib/db.js");
-const { articles, categories } = require("../lib/schema");
+const { articles, categories, savedArticles } = require("../lib/schema");
 const slugify = require("slugify");
 
 // utils
 const { summarizeContent } = require("../utils/ai-based/summarizeContent.js");
 
-exports.getArticlesByCategory = async ({ category, limit = 100 }) => {
+exports.getArticlesByCategory = async ({ category, limit = 100, userId }) => {
   let query = db
     .select({
       id: articles.id,
@@ -18,9 +18,20 @@ exports.getArticlesByCategory = async ({ category, limit = 100 }) => {
       publishedAt: articles.published_at,
       updatedAt: articles.updated_at,
       category: categories.name,
+      isSaved: userId
+        ? sql`CASE WHEN ${savedArticles.article_id} IS NOT NULL THEN true ELSE false END`
+        : sql`false`,
     })
     .from(articles)
     .leftJoin(categories, eq(articles.category_id, categories.id));
+
+  // Add the savedArticles join when userId is provided
+  if (userId) {
+    query = query.leftJoin(
+      savedArticles,
+      eq(savedArticles.article_id, articles.id)
+    );
+  }
 
   // apply filter only if category is not "All"
   if (category && category !== "All") {
@@ -100,8 +111,8 @@ exports.createNewsArticle = async ({
   return newArticle;
 };
 
-exports.getNewsArticleById = async ({ articleId }) => {
-  const [article] = await db
+exports.getNewsArticleById = async ({ articleId, userId }) => {
+  let query = db
     .select({
       id: articles.id,
       title: articles.title,
@@ -112,17 +123,28 @@ exports.getNewsArticleById = async ({ articleId }) => {
       updatedAt: articles.updated_at,
       summary: articles.summary,
       category: categories.name,
+      isSaved: userId
+        ? sql`CASE WHEN ${savedArticles.article_id} IS NOT NULL THEN true ELSE false END`
+        : sql`false`,
     })
     .from(articles)
-    .where(eq(articles.id, articleId))
-    .limit(1);
+    .leftJoin(categories, eq(articles.category_id, categories.id));
+
+  // Add the savedArticles join when userId is provided
+  if (userId) {
+    query = query.leftJoin(
+      savedArticles,
+      eq(savedArticles.article_id, articles.id)
+    );
+  }
+
+  const [article] = await query.where(eq(articles.id, articleId)).limit(1);
 
   return article;
 };
 
-exports.getNewsArticleBySlug = async ({ articleSlug }) => {
-  console.log("Fetching article by slugsssssssssss:", articleSlug);
-  const [article] = await db
+exports.getNewsArticleBySlug = async ({ articleSlug, userId }) => {
+  let query = db
     .select({
       id: articles.id,
       title: articles.title,
@@ -134,11 +156,22 @@ exports.getNewsArticleBySlug = async ({ articleSlug }) => {
       updatedAt: articles.updated_at,
       summary: articles.summary,
       category: categories.name,
+      isSaved: userId
+        ? sql`CASE WHEN ${savedArticles.article_id} IS NOT NULL THEN true ELSE false END`
+        : sql`false`,
     })
     .from(articles)
-    .leftJoin(categories, eq(articles.category_id, categories.id))
-    .where(eq(articles.slug, articleSlug))
-    .limit(1);
+    .leftJoin(categories, eq(articles.category_id, categories.id));
+
+  // Add the savedArticles join when userId is provided
+  if (userId) {
+    query = query.leftJoin(
+      savedArticles,
+      eq(savedArticles.article_id, articles.id)
+    );
+  }
+
+  const [article] = await query.where(eq(articles.slug, articleSlug)).limit(1);
 
   console.log("Article fetched by slug:", article);
 
@@ -154,7 +187,7 @@ exports.deleteNewsArticle = async ({ articleId }) => {
   return deletedArticle;
 };
 
-exports.getRelatedNewsArticles = async ({ articleId, limit = 3 }) => {
+exports.getRelatedNewsArticles = async ({ articleId, limit = 3, userId }) => {
   const [article] = await db
     .select({ categoryId: articles.category_id })
     .from(articles)
@@ -167,7 +200,7 @@ exports.getRelatedNewsArticles = async ({ articleId, limit = 3 }) => {
 
   const categoryId = article.categoryId;
 
-  const relatedArticles = await db
+  let query = db
     .select({
       id: articles.id,
       title: articles.title,
@@ -178,23 +211,34 @@ exports.getRelatedNewsArticles = async ({ articleId, limit = 3 }) => {
       updatedAt: articles.updated_at,
       summary: articles.summary,
       category: categories.name,
+      isSaved: userId
+        ? sql`CASE WHEN ${savedArticles.article_id} IS NOT NULL THEN true ELSE false END`
+        : sql`false`,
     })
     .from(articles)
-    .leftJoin(categories, eq(articles.category_id, categories.id))
-    .where(
-      eq(articles.category_id, categoryId),
-      ne(articles.id, articleId) // Use 'ne' function instead of articles.id.ne
-    )
+    .leftJoin(categories, eq(articles.category_id, categories.id));
+
+  // Add the savedArticles join when userId is provided
+  if (userId) {
+    query = query.leftJoin(
+      savedArticles,
+      eq(savedArticles.article_id, articles.id)
+    );
+  }
+
+  const relatedArticles = await query
+    .where(eq(articles.category_id, categoryId), ne(articles.id, articleId))
     .orderBy(desc(articles.published_at))
     .limit(limit);
 
   return relatedArticles;
 };
 
-exports.getTopNewsStories = async ({ limit = 100 } = {}) => {
-  const topStories = await db
+exports.getTopNewsStories = async ({ limit = 20, userId } = {}) => {
+  let query = db
     .select({
       id: articles.id,
+      slug: articles.slug,
       title: articles.title,
       imageCover: articles.image_cover,
       sources: articles.sources,
@@ -203,10 +247,24 @@ exports.getTopNewsStories = async ({ limit = 100 } = {}) => {
       updatedAt: articles.updated_at,
       summary: articles.summary,
       category: categories.name,
+      isSaved: userId
+        ? sql`CASE WHEN ${savedArticles.article_id} IS NOT NULL THEN true ELSE false END`
+        : sql`false`,
     })
     .from(articles)
-    .leftJoin(categories, eq(articles.category_id, categories.id))
-    .orderBy(asc(articles.published_at))
+    .leftJoin(categories, eq(articles.category_id, categories.id));
+
+  // Add the savedArticles join when userId is provided
+  if (userId) {
+    query = query.leftJoin(
+      savedArticles,
+      eq(savedArticles.article_id, articles.id)
+    );
+  }
+
+  const topStories = await query
+    .orderBy(desc(articles.published_at))
+    .offset(10)
     .limit(limit);
 
   console.log("Top stories fetched:", topStories);

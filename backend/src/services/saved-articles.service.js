@@ -1,6 +1,6 @@
 const { db } = require("../lib/db.js");
 const { savedArticles, articles } = require("../lib/schema.js");
-const { eq } = require("drizzle-orm");
+const { eq, desc, sql } = require("drizzle-orm");
 
 exports.saveNewsArticle = async ({ userId, articleId }) => {
   // Insert if not already saved
@@ -26,16 +26,18 @@ exports.unsaveNewsArticle = async ({ userId, articleId }) => {
 exports.getSavedNewsArticles = async ({ userId }) => {
   const saved = await db
     .select({
+      slug: articles.slug,
       id: articles.id,
       title: articles.title,
       imageCover: articles.image_cover,
       summary: articles.summary,
       publishedAt: articles.published_at,
+      isSaved: sql`true`,
     })
     .from(savedArticles)
     .leftJoin(articles, eq(savedArticles.article_id, articles.id))
     .where(eq(savedArticles.user_id, userId))
-    .orderBy(savedArticles.saved_at.desc());
+    .orderBy(desc(savedArticles.saved_at));
 
   return saved;
 };

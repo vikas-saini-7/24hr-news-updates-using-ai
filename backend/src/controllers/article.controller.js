@@ -5,13 +5,15 @@ const {
   deleteNewsArticle,
   getRelatedNewsArticles,
   getNewsArticleBySlug,
-  getTopNewsStories
+  getTopNewsStories,
 } = require("../services/article.services.js");
 
 exports.getAllArticlesByCategory = async (req, res) => {
   try {
     const { category, limit } = req.query;
-    const articles = await getArticlesByCategory({ category, limit });
+    const userId = req.user?.id;
+    console.log("userId: ", userId);
+    const articles = await getArticlesByCategory({ category, limit, userId });
 
     res.status(200).json({
       success: true,
@@ -53,7 +55,8 @@ exports.createArticle = async (req, res) => {
 exports.getArticleById = async (req, res) => {
   try {
     const articleId = req.params.id;
-    const article = await getNewsArticleById({ articleId });
+    const userId = req.user?.id;
+    const article = await getNewsArticleById({ articleId, userId });
 
     res.status(200).json({
       success: true,
@@ -71,7 +74,8 @@ exports.getArticleById = async (req, res) => {
 exports.getArticleBySlug = async (req, res) => {
   try {
     const articleSlug = req.params.slug;
-    const article = await getNewsArticleBySlug({ articleSlug });
+    const userId = req.user?.id;
+    const article = await getNewsArticleBySlug({ articleSlug, userId });
 
     // console.log("Article retrieved by slug:", article);
 
@@ -110,9 +114,11 @@ exports.getRelatedArticles = async (req, res) => {
   try {
     const articleId = req.params.id;
     const { limit } = req.query;
+    const userId = req.user?.id;
     const relatedArticles = await getRelatedNewsArticles({
       articleId,
       limit,
+      userId,
     });
 
     res.status(200).json({
@@ -130,7 +136,9 @@ exports.getRelatedArticles = async (req, res) => {
 
 exports.getTopStories = async (req, res) => {
   try {
-    const topStories = await getTopNewsStories();
+    const userId = req.user?.id;
+    const { limit } = req.query;
+    const topStories = await getTopNewsStories({ userId });
 
     res.status(200).json({
       success: true,

@@ -14,7 +14,10 @@ export default function TopStoriesPage() {
       try {
         setLoading(true);
         const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/top-stories`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/top-stories`,
+          {
+            withCredentials: true,
+          }
         );
         setNews(res.data.data);
       } catch (error) {

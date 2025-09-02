@@ -2,12 +2,12 @@ const {
   saveNewsArticle,
   unsaveNewsArticle,
   getSavedNewsArticles,
-} = require("../services/savedArticles.service.js");
+} = require("../services/saved-articles.service.js");
 
 exports.saveArticle = async (req, res) => {
   try {
     const userId = req.user.id; // from authenticate middleware
-    const { articleId } = req.body;
+    const { articleId } = req.params;
 
     const saved = await saveNewsArticle({ userId, articleId });
 
@@ -42,7 +42,7 @@ exports.unsaveArticle = async (req, res) => {
 
 exports.getSavedArticles = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user?.id;
     const savedArticles = await getSavedNewsArticles({ userId });
 
     res.status(200).json({

@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 import placeHolderNewsImage from "@/assets/placeholder-news.png";
+import SaveButton from "@/components/feed/SaveButton";
 
 // const relatedArticles = [
 //   {
@@ -57,7 +58,10 @@ export default function NewsDetailsPage() {
       setError(null);
       try {
         const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/${slug}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/${slug}`,
+          {
+            withCredentials: true,
+          }
         );
         setArticle(res.data.data);
       } catch (err) {
@@ -79,7 +83,10 @@ export default function NewsDetailsPage() {
 
       try {
         const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/${article.id}/related`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/${article.id}/related`,
+          {
+            withCredentials: true,
+          }
         );
         setRelatedArticles(res.data.data);
       } catch (err) {
@@ -128,13 +135,16 @@ export default function NewsDetailsPage() {
         {/* Article Card */}
         <div className="max-w-3xl mx-auto mt-5 p-6 rounded-2xl bg-gray-500/10 flex flex-col">
           {/* Cover Image */}
-          <div className="w-full h-72 relative mb-6">
+          <div className="w-full h-auto relative mb-3 aspect-video">
             <Image
               src={article.imageCover || placeHolderNewsImage}
               alt={article.title}
-              fill
-              className="object-cover rounded-xl"
+              className="object-cover rounded-xl w-full"
+              height={500}
+              width={500}
             />
+            {/* Save button overlay */}
+            <SaveButton articleId={article.id} initialSaved={article.isSaved} />
           </div>
 
           {/* Title */}
