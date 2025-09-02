@@ -12,8 +12,9 @@ router.post("/", authenticateAI, articleController.createArticle);
 router.delete("/:id", authenticate, articleController.deleteArticle);
 
 // exposed for public access
-router.get("/:slug", articleController.getArticleBySlug);
+router.get("/top-stories", articleController.getTopStories);
 router.get("/", articleController.getAllArticlesByCategory);
+router.get("/:slug", articleController.getArticleBySlug);
 router.get("/:id/related", articleController.getRelatedArticles);
 
 module.exports = router;

@@ -156,7 +156,7 @@ async function fetchRSS() {
       console.error("RSS fetch error:", err.message);
     }
   }
-  return allArticles.slice(0, 10);
+  return allArticles.slice(0, 2);
 }
 
 async function saveArticles(articlesList) {

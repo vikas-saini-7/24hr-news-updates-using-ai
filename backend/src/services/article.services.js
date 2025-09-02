@@ -1,4 +1,4 @@
-const { eq, desc, ne } = require("drizzle-orm");
+const { eq, desc, ne, asc } = require("drizzle-orm");
 const { db } = require("../lib/db.js");
 const { articles, categories } = require("../lib/schema");
 const slugify = require("slugify");
@@ -189,4 +189,27 @@ exports.getRelatedNewsArticles = async ({ articleId, limit = 3 }) => {
     .limit(limit);
 
   return relatedArticles;
+};
+
+exports.getTopNewsStories = async ({ limit = 100 } = {}) => {
+  const topStories = await db
+    .select({
+      id: articles.id,
+      title: articles.title,
+      imageCover: articles.image_cover,
+      sources: articles.sources,
+      content: articles.content,
+      publishedAt: articles.published_at,
+      updatedAt: articles.updated_at,
+      summary: articles.summary,
+      category: categories.name,
+    })
+    .from(articles)
+    .leftJoin(categories, eq(articles.category_id, categories.id))
+    .orderBy(asc(articles.published_at))
+    .limit(limit);
+
+  console.log("Top stories fetched:", topStories);
+
+  return topStories;
 };

@@ -5,6 +5,7 @@ const {
   deleteNewsArticle,
   getRelatedNewsArticles,
   getNewsArticleBySlug,
+  getTopNewsStories
 } = require("../services/article.services.js");
 
 exports.getAllArticlesByCategory = async (req, res) => {
@@ -118,6 +119,23 @@ exports.getRelatedArticles = async (req, res) => {
       success: true,
       message: "Related articles retrieved successfully",
       data: relatedArticles,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+exports.getTopStories = async (req, res) => {
+  try {
+    const topStories = await getTopNewsStories();
+
+    res.status(200).json({
+      success: true,
+      message: "Top stories retrieved successfully",
+      data: topStories,
     });
   } catch (error) {
     res.status(500).json({
