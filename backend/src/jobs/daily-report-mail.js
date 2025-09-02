@@ -40,13 +40,13 @@ async function sendDailyLogs() {
   // resetLogs();
 }
 
-if (process.env.NODE_ENV !== "production") {
-  try {
-    sendDailyLogs();
-  } catch (error) {
-    console.log(error);
-  }
-}
+// if (process.env.NODE_ENV !== "production") {
+//   try {
+//     sendDailyLogs();
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
 
 // Run every day at 10 PM
 cron.schedule("0 22 * * *", () => {

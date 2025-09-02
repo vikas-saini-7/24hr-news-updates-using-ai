@@ -6,7 +6,7 @@ const { db } = require("../lib/db");
 const { articles, categories } = require("../lib/schema");
 const { detectCategory } = require("../lib/category");
 const { eq } = require("drizzle-orm");
-const { appendLogs } = require("../utils/logger");
+const { appendLogs } = require("../utils/report-generation/logger");
 
 const parser = new Parser({
   customFields: {
