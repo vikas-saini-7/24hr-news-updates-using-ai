@@ -5,6 +5,12 @@ const {
   logoutUser,
 } = require("../services/auth.services.js");
 
+const cookieOptions = {
+  httpOnly: true,
+  sameSite: "None",
+  secure: process.env.NODE_ENV === "production",
+};
+
 // user regiteration
 exports.register = async (req, res) => {
   try {
@@ -17,15 +23,8 @@ exports.register = async (req, res) => {
 
     const { password: _, ...safeUser } = user;
 
-    res.cookie("accessToken", accessToken, {
-      httpOnly: true,
-      sameSite: "None",
-    });
-
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      sameSite: "None",
-    });
+    res.cookie("accessToken", accessToken, cookieOptions);
+    res.cookie("refreshToken", refreshToken, cookieOptions);
 
     res.status(201).json({
       success: true,
@@ -53,15 +52,8 @@ exports.login = async (req, res) => {
 
     const { password: _, ...safeUser } = user;
 
-    res.cookie("accessToken", accessToken, {
-      httpOnly: true,
-      sameSite: "None",
-    });
-
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      sameSite: "None",
-    });
+    res.cookie("accessToken", accessToken, cookieOptions);
+    res.cookie("refreshToken", refreshToken, cookieOptions);
 
     res.status(200).json({
       success: true,
@@ -82,10 +74,9 @@ exports.refresh = async (req, res) => {
   try {
     token = req.cookies["refreshToken"];
     const { newAccessToken } = await refreshAccessToken({ token });
-    res.cookie("accessToken", newAccessToken, {
-      httpOnly: true,
-      sameSite: "None",
-    });
+
+    res.cookie("accessToken", newAccessToken, cookieOptions);
+
     res.status(200).json({ success: true, message: "Token Refreshed!" });
   } catch (error) {
     console.error("error in refreshing token:", error);
@@ -101,8 +92,8 @@ exports.logout = async (req, res) => {
   try {
     logoutUser();
 
-    res.clearCookie("accessToken", { httpOnly: true, sameSite: "None" });
-    res.clearCookie("refreshToken", { httpOnly: true, sameSite: "None" });
+    res.clearCookie("accessToken", cookieOptions);
+    res.clearCookie("refreshToken", cookieOptions);
 
     res.status(200).json({
       success: true,
