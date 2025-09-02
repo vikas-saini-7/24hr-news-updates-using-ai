@@ -6,6 +6,7 @@ const { db } = require("../lib/db");
 const { articles, categories } = require("../lib/schema");
 const { detectCategory } = require("../lib/category");
 const { eq } = require("drizzle-orm");
+const { appendLogs } = require("../utils/logger");
 
 const parser = new Parser({
   customFields: {
@@ -115,9 +116,20 @@ async function fetchRSS() {
         // Only add sources from parsed content (actual article URLs, not Google redirects)
         if (parsedContent.sources && parsedContent.sources.length > 0) {
           parsedContent.sources.forEach((source) => {
-            if (source.url && !sourcesArray.includes(source.url)) {
-              sourcesArray.push(source.url);
+            if (source.url && !sourcesArray.some((s) => s.url === source.url)) {
+              sourcesArray.push({
+                name: source.sourceName || "Unknown Source",
+                url: source.url,
+              });
             }
+          });
+        }
+
+        // If no sources found, add a default Google News source
+        if (sourcesArray.length === 0) {
+          sourcesArray.push({
+            name: "Google News",
+            url: item.link || item.guid,
           });
         }
 
@@ -144,7 +156,7 @@ async function fetchRSS() {
       console.error("RSS fetch error:", err.message);
     }
   }
-  return allArticles.slice(0, 15);
+  return allArticles.slice(0, 10);
 }
 
 async function saveArticles(articlesList) {
@@ -157,23 +169,36 @@ async function saveArticles(articlesList) {
       .onConflictDoNothing({ target: articles.slug }); // ✅ prevents dupes
 
     console.log(`Saved batch of ${articlesList.length} articles.`);
+
+    // To get category names
+    const allCategories = await db
+      .select({ id: categories.id, name: categories.name })
+      .from(categories);
+    const categoryMap = new Map(allCategories.map((cat) => [cat.id, cat.name]));
+
+    const logEntries = articlesList.map((a) => ({
+      title: a.title,
+      category: categoryMap.get(a.category_id) || "Uncategorized",
+      time: new Date().toISOString(),
+    }));
+    appendLogs(logEntries);
   } catch (err) {
     console.error("DB insert error:", err.message);
   }
 }
 
-async function runWorker() {
+async function runRSSWorker() {
   console.log("🚀 Fetching news...");
   const rssArticles = await fetchRSS();
 
-  console.log(rssArticles);
-  console.log(`Fetched ${rssArticles.length} articles.`);
+  // console.log(rssArticles);
+  console.log(`Fetched ${rssArticles.length} articles from rss feeds.`);
 
-  await saveArticles(rssArticles);
+  // await saveArticles(rssArticles);
   console.log("✅ News sync complete.");
 }
 
 // Run every 10 minutes
-cron.schedule("*/10 * * * *", runWorker);
+cron.schedule("*/10 * * * *", runRSSWorker);
 
-module.exports = { runWorker };
+module.exports = { runRSSWorker };

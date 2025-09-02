@@ -9,6 +9,8 @@ import { Article } from "@/types";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+import placeHolderNewsImage from "@/assets/placeholder-news.png";
+
 const relatedArticles = [
   {
     id: 1,
@@ -110,7 +112,7 @@ export default function NewsDetailsPage() {
           {/* Cover Image */}
           <div className="w-full h-72 relative mb-6">
             <Image
-              src="https://i.pinimg.com/736x/ae/06/54/ae0654dfb0d0157d6c8c6c25063d0a19.jpg"
+              src={article.imageCover || placeHolderNewsImage}
               alt={article.title}
               fill
               className="object-cover rounded-xl"
@@ -121,9 +123,11 @@ export default function NewsDetailsPage() {
           <h1 className="text-2xl font-bold text-white">{article.title}</h1>
 
           {/* Category */}
-          <span className="mt-2 text-xs text-white/60">
-            #{article.category}
-          </span>
+          {article.category && (
+            <span className="mt-2 text-xs text-white/60">
+              #{article.category}
+            </span>
+          )}
 
           {/* Summary */}
           <p className="mt-4 text-base text-white/70">{article.summary}</p>
@@ -141,13 +145,12 @@ export default function NewsDetailsPage() {
                 {article.sources.slice(0, 2).map((src, idx) => (
                   <li key={idx}>
                     <a
-                      href={src}
+                      href={src.url}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-400 hover:underline"
                     >
-                      {/* {src || src.url} */}
-                      Google Feed
+                      {src.name}
                     </a>
                   </li>
                 ))}

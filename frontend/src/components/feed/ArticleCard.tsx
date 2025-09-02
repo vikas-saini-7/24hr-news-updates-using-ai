@@ -14,7 +14,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
       {/* Cover Image */}
       <div className="w-full h-40 relative mb-3 aspect-video">
         <Image
-          src={article.image_cover || placeHolderNewsImage}
+          src={article.imageCover || placeHolderNewsImage}
           alt={article.title}
           // fill
           className="object-cover rounded-xl"
@@ -33,7 +33,9 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
       <div className="mt-3 text-sm flex justify-between w-full articles-center">
         <div>
           {/* <span className="font-medium text-white/70">Category:</span>{" "} */}
-          <span className="text-white/60 text-xs">#{article.category}</span>
+          {article.category && (
+            <span className="text-white/60 text-xs">#{article.category}</span>
+          )}
         </div>
         <Link href={`/feed/news/${article.slug}`}>
           <div className="text-blue-400 hover:underline">Read Article</div>

@@ -4,7 +4,7 @@ export interface Article {
   slug: string;
   category: string;
   summary: string;
-  image_cover?: string;
+  imageCover?: string;
   content?: string;
   sources?: { name: string; url: string }[];
 }
