@@ -8,4 +8,3 @@ const llmController = require("../controllers/llm.controller.js");
 router.get("/summary", asyncHandler(llmController.getSummary));
 
 module.exports = router;
-s;
