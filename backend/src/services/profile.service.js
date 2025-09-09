@@ -2,6 +2,8 @@ const { eq } = require("drizzle-orm");
 const { db } = require("../lib/db");
 const { users } = require("../lib/schema");
 
+const AppError = require("../utils/global-error-handler/AppError");
+
 exports.fetchProfile = async ({ userId }) => {
   const [user] = await db
     .select({
@@ -17,7 +19,7 @@ exports.fetchProfile = async ({ userId }) => {
     .limit(1);
 
   if (!user) {
-    throw new Error("User not found");
+    throw new AppError("User not found", 404);
   }
 
   return user;

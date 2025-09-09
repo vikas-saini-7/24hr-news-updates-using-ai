@@ -7,27 +7,36 @@ const {
 } = require("../middlewares/auth.middleware.js");
 
 const articleController = require("../controllers/article.controller.js");
+const asyncHandler = require("../utils/global-error-handler/asyncHandler.js");
 
-router.post("/", authenticateAI, articleController.createArticle);
+router.post("/", authenticateAI, asyncHandler(articleController.createArticle));
 // router.get("/:id", authenticate, articleController.getArticleById);
-router.delete("/:id", authenticate, articleController.deleteArticle);
+router.delete(
+  "/:id",
+  authenticate,
+  asyncHandler(articleController.deleteArticle)
+);
 
 // exposed for public access
 router.get(
   "/top-stories",
   authenticateOptional,
-  articleController.getTopStories
+  asyncHandler(articleController.getTopStories)
 );
 router.get(
   "/",
   authenticateOptional,
-  articleController.getAllArticlesByCategory
+  asyncHandler(articleController.getAllArticlesByCategory)
 );
-router.get("/:slug", authenticateOptional, articleController.getArticleBySlug);
+router.get(
+  "/:slug",
+  authenticateOptional,
+  asyncHandler(articleController.getArticleBySlug)
+);
 router.get(
   "/:id/related",
   authenticateOptional,
-  articleController.getRelatedArticles
+  asyncHandler(articleController.getRelatedArticles)
 );
 
 module.exports = router;

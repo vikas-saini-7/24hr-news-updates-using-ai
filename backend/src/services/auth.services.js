@@ -17,6 +17,9 @@ const {
  * @returns user details found in DB
  */
 exports.registerUser = async ({ name, email, password }) => {
+  if (!name || !email || !password) {
+    throw new AppError("Name, email, and password are required", 400);
+  }
   // 1. Check if user exists
   const existingUser = await db
     .select()
@@ -25,7 +28,7 @@ exports.registerUser = async ({ name, email, password }) => {
     .limit(1);
 
   if (existingUser.length > 0) {
-    throw new Error("User Already Exists");
+    throw new AppError("User already exists", 409);
   }
 
   // 2. Hash password
@@ -40,6 +43,10 @@ exports.registerUser = async ({ name, email, password }) => {
       password: hashedPassword,
     })
     .returning();
+
+  if (!user) {
+    throw new AppError("Failed to create user", 500);
+  }
 
   // 3. Create JWT tokens
   const payload = {
@@ -62,6 +69,10 @@ exports.registerUser = async ({ name, email, password }) => {
  * @returns user details found in DB + accessToken + refreshToken
  */
 exports.loginUser = async ({ email, password }) => {
+  if (!email || !password) {
+    throw new AppError("Email and password are required", 400);
+  }
+
   // 1. Check if user exists
   const [user] = await db
     .select()
@@ -70,13 +81,13 @@ exports.loginUser = async ({ email, password }) => {
     .limit(1);
 
   if (!user) {
-    throw new Error("Invalid Email or Password");
+    throw new AppError("Invalid email or password", 401);
   }
 
   // 2. Compare password
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
-    throw new Error("Invalid Email or Password");
+    throw new AppError("Invalid email or password", 401);
   }
 
   // 3. Create JWT tokens
@@ -100,7 +111,7 @@ exports.loginUser = async ({ email, password }) => {
 
 exports.refreshAccessToken = async ({ refreshToken }) => {
   if (!refreshToken) {
-    throw new Error("Unauthorized");
+    throw new AppError("Refresh token is required", 400);
   }
 
   const decoded = verifyRefreshToken(refreshToken);
@@ -112,8 +123,9 @@ exports.refreshAccessToken = async ({ refreshToken }) => {
     .limit(1);
 
   if (!user) {
-    throw new Error("Invalid Token");
+    throw new AppError("User not found", 404);
   }
+
   const payload = {
     id: user.id,
     name: user.name,

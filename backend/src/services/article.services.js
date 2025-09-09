@@ -43,12 +43,17 @@ exports.getArticlesByCategory = async ({ category, limit = 100, userId }) => {
   return results;
 };
 
-const makeSlug = (title) =>
-  slugify(title, {
-    lower: true, // lowercase
-    strict: true, // remove special chars
+const makeSlug = (title) => {
+  if (!title || typeof title !== "string") {
+    throw new AppError("Title is required and must be a string", 400);
+  }
+
+  return slugify(title, {
+    lower: true,
+    strict: true,
     trim: true,
   });
+};
 
 const generateUniqueSlug = async (title) => {
   let baseSlug = makeSlug(title);
@@ -82,7 +87,10 @@ exports.createNewsArticle = async ({
   categoryId,
 }) => {
   if (!title || !sources || !content || !categoryId) {
-    throw new Error("Missing required fields to create an article");
+    throw new AppError(
+      "Missing required fields: title, sources, content, and categoryId are required",
+      400
+    );
   }
 
   const slug = await generateUniqueSlug(title);
@@ -108,10 +116,18 @@ exports.createNewsArticle = async ({
     })
     .returning();
 
+  if (!newArticle) {
+    throw new AppError("Failed to create article", 500);
+  }
+
   return newArticle;
 };
 
 exports.getNewsArticleById = async ({ articleId, userId }) => {
+  if (!articleId) {
+    throw new AppError("Article ID is required", 400);
+  }
+
   let query = db
     .select({
       id: articles.id,
@@ -140,10 +156,18 @@ exports.getNewsArticleById = async ({ articleId, userId }) => {
 
   const [article] = await query.where(eq(articles.id, articleId)).limit(1);
 
+  if (!article) {
+    throw new AppError("Article not found", 404);
+  }
+
   return article;
 };
 
 exports.getNewsArticleBySlug = async ({ articleSlug, userId }) => {
+  if (!articleSlug) {
+    throw new AppError("Article slug is required", 400);
+  }
+
   let query = db
     .select({
       id: articles.id,
@@ -173,21 +197,35 @@ exports.getNewsArticleBySlug = async ({ articleSlug, userId }) => {
 
   const [article] = await query.where(eq(articles.slug, articleSlug)).limit(1);
 
-  console.log("Article fetched by slug:", article);
+  if (!article) {
+    throw new AppError("Article not found", 404);
+  }
 
   return article;
 };
 
 exports.deleteNewsArticle = async ({ articleId }) => {
+  if (!articleId) {
+    throw new AppError("Article ID is required", 400);
+  }
+
   const [deletedArticle] = await db
     .delete(articles)
     .where(eq(articles.id, articleId))
     .returning();
 
+  if (!deletedArticle) {
+    throw new AppError("Article not found or already deleted", 404);
+  }
+
   return deletedArticle;
 };
 
 exports.getRelatedNewsArticles = async ({ articleId, limit = 3, userId }) => {
+  if (!articleId) {
+    throw new AppError("Article ID is required", 400);
+  }
+
   const [article] = await db
     .select({ categoryId: articles.category_id })
     .from(articles)
@@ -195,7 +233,7 @@ exports.getRelatedNewsArticles = async ({ articleId, limit = 3, userId }) => {
     .limit(1);
 
   if (!article) {
-    throw new Error("Article not found");
+    throw new AppError("Article not found", 404);
   }
 
   const categoryId = article.categoryId;
@@ -266,8 +304,6 @@ exports.getTopNewsStories = async ({ limit = 20, userId } = {}) => {
     .orderBy(desc(articles.published_at))
     .offset(10)
     .limit(limit);
-
-  console.log("Top stories fetched:", topStories);
 
   return topStories;
 };
