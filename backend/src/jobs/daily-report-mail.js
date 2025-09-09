@@ -37,7 +37,7 @@ async function sendDailyLogs() {
     console.error("❌ Error sending daily logs email:", error);
   }
 
-  // resetLogs();
+  resetLogs();
 }
 
 // if (process.env.NODE_ENV !== "production") {
