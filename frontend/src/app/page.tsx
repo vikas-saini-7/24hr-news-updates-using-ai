@@ -12,11 +12,11 @@ export default function Home() {
         <Hero />
 
         {/* Smoke layer */}
-        <div className="absolute inset-0 pointer-events-none z-0">
+        {/* <div className="absolute inset-0 pointer-events-none z-0">
           <div className="smoke"></div>
           <div className="smoke delay-1"></div>
           <div className="smoke delay-2"></div>
-        </div>
+        </div> */}
       </div>
       <QualitiesSection />
       <LandingFooter />

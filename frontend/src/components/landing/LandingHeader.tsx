@@ -29,7 +29,7 @@ const LandingHeader = () => {
           </ul>
         </div>
         <Link href={"/feed"}>
-          <LandingButton>TRY APP</LandingButton>
+          <LandingButton>LAUNCH APP</LandingButton>
         </Link>
       </div>
     </div>
