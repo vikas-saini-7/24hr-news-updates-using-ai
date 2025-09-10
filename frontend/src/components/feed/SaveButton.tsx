@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { IconBookmark, IconBookmarkFilled } from "@tabler/icons-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
 
 interface SaveButtonProps {
   articleId: string;
@@ -10,15 +12,23 @@ interface SaveButtonProps {
 }
 
 const SaveButton: React.FC<SaveButtonProps> = ({ articleId, initialSaved }) => {
+  const { user } = useAuth();
+  const router = useRouter();
+
   const [isSaved, setIsSaved] = useState(initialSaved || false);
   const [loading, setLoading] = useState(false);
 
   const toggleSave = async () => {
     if (loading) return;
+    if (!user) {
+      alert("Please log in to save articles.");
+      router.push("/login");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      // 🔹 Optimistic UI update
       setIsSaved(!isSaved);
 
       if (isSaved) {

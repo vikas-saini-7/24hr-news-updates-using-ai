@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import React from "react";
 import Link from "next/link";
@@ -17,7 +18,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
         <Image
           src={article.imageCover || placeHolderNewsImage}
           alt={article.title}
-          className="object-cover rounded-xl w-full"
+          className="object-cover rounded-xl w-full aspect-video"
           height={500}
           width={500}
         />

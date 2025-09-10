@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import ArticleCard from "@/components/feed/ArticleCard";
-import { Article } from "@/types";
-import axios from "axios";
+import { fetchFeedByCategory } from "@/queries/articles";
 
 const categories = [
   { name: "All" },
@@ -17,32 +17,18 @@ const categories = [
   { name: "World" },
 ];
 
-export default function Home() {
+export default function page() {
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
-  const [news, setNews] = useState<Article[]>([]);
-  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchNews = async (category: string) => {
-      try {
-        setLoading(true);
-        const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles?category=${category}`,
-          {
-            withCredentials: true,
-          }
-        );
-        setNews(res.data.data);
-      } catch (error) {
-        console.error("Error fetching news:", error);
-        setNews([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchNews(selectedCategory.name);
-  }, [selectedCategory]);
+  const {
+    data: news = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["news", selectedCategory.name],
+    queryFn: () => fetchFeedByCategory(selectedCategory.name),
+  });
 
   return (
     <div className="p-6">
@@ -65,14 +51,18 @@ export default function Home() {
 
       {/* News content */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
-        {loading ? (
-          // Simple skeleton loader
+        {isLoading ? (
+          // Skeleton loader
           Array.from({ length: 8 }).map((_, idx) => (
             <div
               key={idx}
               className="h-40 bg-gray-500/10 animate-pulse rounded-xl"
             />
           ))
+        ) : isError ? (
+          <p className="text-red-400">
+            {(error as Error)?.message || "Error fetching news."}
+          </p>
         ) : news.length > 0 ? (
           news.map((item) => <ArticleCard key={item.id} article={item} />)
         ) : (
