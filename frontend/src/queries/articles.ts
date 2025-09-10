@@ -19,3 +19,11 @@ export async function fetchTopStories(): Promise<Article[]> {
   );
   return res.data.data;
 }
+
+export async function fetchSavedArticles(): Promise<Article[]> {
+  const res = await axios.get(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/save`,
+    { withCredentials: true }
+  );
+  return res.data.data;
+}
