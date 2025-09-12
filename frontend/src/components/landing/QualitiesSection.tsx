@@ -2,6 +2,7 @@ import React from "react";
 import LandingButton from "../reusables/LandingButton";
 import Link from "next/link";
 import Image from "next/image";
+import LaunchingScreen from "./LaunchingScreen";
 
 const qualities = [
   {
@@ -9,21 +10,21 @@ const qualities = [
     description:
       "Get the latest news and updates around the clock, ensuring you never miss important information.",
     image: "/images/24hours.svg", // Add your image path
-    button: <LandingButton>LAUNCH APP</LandingButton>,
+    button: <LaunchingScreen />,
   },
   {
     title: "AI Summary",
     description:
       "Quickly grasp key points with AI-generated summaries that save your time and enhance comprehension.",
     image: "/images/ai-brain.svg", // Add your image path
-    button: <LandingButton>LAUNCH APP</LandingButton>,
+    button: <LaunchingScreen />,
   },
   {
     title: "RSS Feeds",
     description:
       "Stay informed with real-time updates from trusted sources aggregated in one convenient location.",
     image: "/images/rss-feed.svg", // Add your image path
-    button: <LandingButton>LAUNCH APP</LandingButton>,
+    button: <LaunchingScreen />,
   },
 ];
 
@@ -75,11 +76,7 @@ const QualitiesSection = () => {
               </p>
 
               {/* Button */}
-              <div className="mt-auto">
-                <Link href={"/feed"} className="inline-block w-full">
-                  {quality.button}
-                </Link>
-              </div>
+              <div className="mt-auto">{quality.button}</div>
             </div>
           ))}
         </div>

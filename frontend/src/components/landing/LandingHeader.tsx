@@ -1,6 +1,7 @@
 import React from "react";
 import LandingButton from "../reusables/LandingButton";
 import Link from "next/link";
+import LaunchingScreen from "./LaunchingScreen";
 
 const LandingHeader = () => {
   return (
@@ -28,9 +29,7 @@ const LandingHeader = () => {
             </Link>
           </ul>
         </div>
-        <Link href={"/feed"}>
-          <LandingButton>LAUNCH APP</LandingButton>
-        </Link>
+        <LaunchingScreen />
       </div>
     </div>
   );

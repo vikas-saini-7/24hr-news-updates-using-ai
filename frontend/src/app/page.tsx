@@ -10,13 +10,6 @@ export default function Home() {
       <div className="min-h-screen overflow-hidden relative z-10">
         <LandingHeader />
         <Hero />
-
-        {/* Smoke layer */}
-        {/* <div className="absolute inset-0 pointer-events-none z-0">
-          <div className="smoke"></div>
-          <div className="smoke delay-1"></div>
-          <div className="smoke delay-2"></div>
-        </div> */}
       </div>
       <QualitiesSection />
       <LandingFooter />

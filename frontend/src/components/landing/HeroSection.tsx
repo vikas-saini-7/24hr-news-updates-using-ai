@@ -1,6 +1,7 @@
 import React from "react";
 import LandingButton from "../reusables/LandingButton";
 import { IconAt, IconDownload } from "@tabler/icons-react";
+import LaunchingScreen from "./LaunchingScreen";
 
 const Hero = () => {
   return (
@@ -9,9 +10,9 @@ const Hero = () => {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
           <div className="space-y-8">
-            <div className="inline-flex items-center bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-full px-4 py-2 border border-blue-500/20">
+            <div className="inline-flex items-center bg-gradient-to-r from-blue-500/5 to-purple-500/5 rounded-full px-4 py-2 border border-gray-500/20">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse mr-2"></div>
-              <span className="text-sm text-blue-300">
+              <span className="text-sm text-gray-300">
                 Live Feed • Auto-Updated Every 10 Minutes
               </span>
             </div>
@@ -32,12 +33,14 @@ const Hero = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-6">
-              <LandingButton onClick={() => (window.location.href = "/feed")}>
+              {/* <LandingButton onClick={() => (window.location.href = "/feed")}>
                 <div className="px-4 py-2 flex items-center gap-2">
                   <IconAt size={18} />
                   LAUNCH WEB APP
                 </div>
-              </LandingButton>
+              </LandingButton> */}
+
+              <LaunchingScreen />
 
               <LandingButton
                 onClick={() => (window.location.href = "/get-app")}
