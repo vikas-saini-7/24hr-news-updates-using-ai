@@ -12,11 +12,11 @@ const LandingHeader = () => {
             <h1 className="text-xl">LOGO</h1>
           </Link>
           <ul className="flex space- uppercase text-sm text-white/50">
-            <Link href={"/feed"}>
+            {/* <Link href={"/feed"}>
               <li className="hover:text-white cursor-pointer transition px-4 py-4">
                 News
               </li>
-            </Link>
+            </Link> */}
             <Link href={"/about"}>
               <li className="hover:text-white cursor-pointer transition px-4 py-4">
                 About

@@ -3,27 +3,28 @@ import LandingButton from "../reusables/LandingButton";
 import Link from "next/link";
 import Image from "next/image";
 import LaunchingScreen from "./LaunchingScreen";
+import { IconBrain, IconHours24, IconRss } from "@tabler/icons-react";
 
 const qualities = [
   {
-    title: "24x7 Updates",
+    title: "Only 24 Hrs Updates",
     description:
       "Get the latest news and updates around the clock, ensuring you never miss important information.",
-    image: "/images/24hours.svg", // Add your image path
+    icon: <IconHours24 size={32} />,
     button: <LaunchingScreen />,
   },
   {
     title: "AI Summary",
     description:
       "Quickly grasp key points with AI-generated summaries that save your time and enhance comprehension.",
-    image: "/images/ai-brain.svg", // Add your image path
+    icon: <IconBrain size={32} />,
     button: <LaunchingScreen />,
   },
   {
     title: "RSS Feeds",
     description:
       "Stay informed with real-time updates from trusted sources aggregated in one convenient location.",
-    image: "/images/rss-feed.svg", // Add your image path
+    icon: <IconRss size={32} />,
     button: <LaunchingScreen />,
   },
 ];
@@ -57,12 +58,7 @@ const QualitiesSection = () => {
             >
               {/* Image */}
               <div className="w-16 h-16 mb-6 relative">
-                <Image
-                  src={quality.image}
-                  alt={quality.title}
-                  fill
-                  className="object-contain filter invert opacity-80 group-hover:opacity-100 transition-opacity duration-300"
-                />
+                {quality.icon}
               </div>
 
               {/* Title */}

@@ -2,6 +2,7 @@ import React from "react";
 import LandingButton from "../reusables/LandingButton";
 import { IconAt, IconDownload } from "@tabler/icons-react";
 import LaunchingScreen from "./LaunchingScreen";
+import Link from "next/link";
 
 const Hero = () => {
   return (
@@ -42,13 +43,13 @@ const Hero = () => {
 
               <LaunchingScreen />
 
-              <LandingButton
-                onClick={() => (window.location.href = "/get-app")}
-              >
-                <div className="px-0 py-2 flex items-center gap-2">
-                  <IconDownload size={18} /> GET MOBILE APP
-                </div>
-              </LandingButton>
+              <Link href="/get-app">
+                <LandingButton>
+                  <div className="px-0 py-2 flex items-center gap-2">
+                    <IconDownload size={18} /> GET MOBILE APP
+                  </div>
+                </LandingButton>
+              </Link>
             </div>
           </div>
 

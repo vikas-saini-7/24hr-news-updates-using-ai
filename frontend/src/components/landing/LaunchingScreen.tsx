@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import LandingButton from "../reusables/LandingButton";
+import { IconRocket } from "@tabler/icons-react";
 
 const LaunchingScreen = () => {
   const [isLaunching, setIsLaunching] = useState(false);
@@ -17,7 +18,7 @@ const LaunchingScreen = () => {
 
   return (
     <>
-      <LandingButton onClick={handleLaunch}>LAUNCH APP</LandingButton>
+      <LandingButton onClick={handleLaunch}> <div className="flex items-center gap-2"><IconRocket size={18}/> LAUNCH WEB APP</div></LandingButton>
 
       {isLaunching && (
         <div className="fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center z-50">
