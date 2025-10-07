@@ -18,9 +18,9 @@ const Hero = () => {
               </span>
             </div>
 
-            <h1 className="text-5xl lg:text-7xl font-bold leading-tight">
+            <h1 className="text-5xl lg:text-7xl font-bold leading-tight font-onest">
               Only{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-red-400 to-amber-400">
                 24 Hours
               </span>
               <br />

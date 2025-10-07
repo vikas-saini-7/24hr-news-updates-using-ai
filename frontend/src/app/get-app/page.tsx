@@ -2,6 +2,7 @@ import LandingHeader from "@/components/landing/LandingHeader";
 import React from "react";
 import img from "@/assets/under-construction.svg";
 import Image from "next/image";
+import Link from "next/link";
 
 const page = () => {
   return (
@@ -16,6 +17,12 @@ const page = () => {
         />
         <p className="text-lg text-white/50 mt-8">
           Mobile App is under Development. Stay tuned!
+        </p>
+        <p className="text-lg text-white/50">
+          Till that &nbsp;
+          <Link href="/feed" className="text-white underline">
+            Launch WebApp
+          </Link>
         </p>
       </div>
     </div>

@@ -9,7 +9,7 @@ const LandingHeader = () => {
       <div className="flex justify-between items-center py-4">
         <div className="flex items-center space-x-16">
           <Link href={"/"}>
-            <h1 className="text-xl">LOGO</h1>
+            <h1 className="text-xl font-bold">News.AI</h1>
           </Link>
           <ul className="flex space- uppercase text-sm text-white/50">
             {/* <Link href={"/feed"}>

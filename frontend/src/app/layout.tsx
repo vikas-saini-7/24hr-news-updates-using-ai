@@ -1,13 +1,17 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Inter } from "next/font/google";
+import { Onest, DM_Sans } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/common/Header";
-import { AuthProvider } from "@/contexts/AuthContext";
 import GlobalProvider from "@/contexts/GlobalProvider";
 
-const inter = Inter({
-  variable: "--font-inter",
+const onest = Onest({
+  variable: "--font-onest",
   subsets: ["latin"],
+});
+
+export const dmSans = DM_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-dm-sans",
 });
 
 export const metadata: Metadata = {
@@ -23,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} antialiased dark`}>
+      <body className={`${onest.variable} ${dmSans.variable} antialiased dark`}>
         <GlobalProvider>{children}</GlobalProvider>
       </body>
     </html>

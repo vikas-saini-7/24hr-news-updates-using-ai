@@ -57,9 +57,7 @@ const QualitiesSection = () => {
               className="group bg-black/60 border border-white/10 rounded-[46px] p-8 md:p-10 hover:border-white/20 transition-all duration-300"
             >
               {/* Image */}
-              <div className="w-16 h-16 mb-6 relative">
-                {quality.icon}
-              </div>
+              <div className="w-16 h-16 mb-6 relative">{quality.icon}</div>
 
               {/* Title */}
               <h3 className="text-xl md:text-2xl font-semibold text-white mb-4">

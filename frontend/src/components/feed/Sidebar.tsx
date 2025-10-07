@@ -100,7 +100,7 @@ const Sidebar = () => {
 
       {/* Top section */}
       <div>
-        <div className="mb-6 mt-2 px-4 font-bold">LOGO</div>
+        <div className="mb-6 mt-2 px-4 text-xl font-bold">News.AI</div>
         <nav>
           <ul>
             {navigations
