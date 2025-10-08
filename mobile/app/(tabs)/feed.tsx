@@ -1,0 +1,33 @@
+import { View, Text, StyleSheet } from "react-native";
+
+export default function Feed() {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Feed</Text>
+      <Text style={styles.subtitle}>
+        Your latest articles will appear here.
+      </Text>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#121212", // dark background
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#ffffff", // white text
+    marginBottom: 10,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: "#aaaaaa", // secondary text color
+    textAlign: "center",
+  },
+});

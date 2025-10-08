@@ -29,7 +29,7 @@ exports.register = async (req, res) => {
     res.status(201).json({
       success: true,
       message: "Registeration Successfully",
-      data: safeUser,
+      data: { user: safeUser, accessToken, refreshToken },
     });
   } catch (error) {
     console.error("error in register:", error);
@@ -58,7 +58,7 @@ exports.login = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Login successful",
-      data: safeUser,
+      data: { user: safeUser, accessToken, refreshToken },
     });
   } catch (error) {
     console.error("error in login:", error);
