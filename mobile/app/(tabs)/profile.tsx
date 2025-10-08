@@ -60,7 +60,7 @@ export default function Profile() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#121212", // Dark background
+    backgroundColor: "#0a0a0a", // Dark background
     padding: 20,
     alignItems: "center",
   },

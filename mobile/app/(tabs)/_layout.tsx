@@ -1,28 +1,37 @@
 import { Tabs } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import {
+  IconSparkles,
+  IconFlame,
+  IconUser,
+  IconHome,
+} from "@tabler/icons-react-native";
 
 export default function TabsLayout() {
   return (
     <Tabs
       screenOptions={({ route }) => ({
         headerShown: true,
-        headerStyle: { backgroundColor: "#121212" },
+        headerStyle: { backgroundColor: "#0a0a0a" },
         headerTintColor: "#fff",
         tabBarActiveTintColor: "#007bff",
         tabBarInactiveTintColor: "#888",
         tabBarStyle: {
-          backgroundColor: "#1e1e1e",
-          borderTopColor: "#333",
+          backgroundColor: "#141416",
+          borderTopColor: "#222",
+          height: 80,
+          paddingTop: 16,
         },
+        tabBarShowLabel: false,
 
         tabBarIcon: ({ color, size }) => {
-          let iconName: keyof typeof Ionicons.glyphMap = "home";
-          if (route.name === "feed") iconName = "newspaper-outline";
-          else if (route.name === "ai-summary") iconName = "sparkles-outline";
+          if (route.name === "feed")
+            return <IconHome size={size} color={color} strokeWidth={2} />;
+          else if (route.name === "ai-summary")
+            return <IconSparkles size={size} color={color} strokeWidth={2} />;
           else if (route.name === "top-stories")
-            iconName = "trending-up-outline";
-          else if (route.name === "profile") iconName = "person-outline";
-          return <Ionicons name={iconName} size={size} color={color} />;
+            return <IconFlame size={size} color={color} strokeWidth={2} />;
+          else if (route.name === "profile")
+            return <IconUser size={size} color={color} strokeWidth={2} />;
         },
       })}
     >

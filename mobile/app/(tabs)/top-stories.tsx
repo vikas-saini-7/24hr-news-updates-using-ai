@@ -12,7 +12,7 @@ export default function TopStories() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#121212", // dark background
+    backgroundColor: "#0a0a0a", // dark background
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
