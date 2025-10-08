@@ -2,7 +2,7 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const api = axios.create({
-  baseURL: "http://10.241.86.198:8000/api", // your local IP
+  baseURL: "https://two4hr-news-updates-using-ai.onrender.com", // your local IP
   headers: {
     "Content-Type": "application/json",
   },

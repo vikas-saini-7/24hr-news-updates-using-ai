@@ -26,7 +26,7 @@ export default function Login() {
       return Alert.alert("Error", "Please fill all fields");
     setLoading(true);
     try {
-      const res = await api.post("/auth/login", { email, password });
+      const res = await api.post("/api/auth/login", { email, password });
       const { accessToken } = res.data.data;
       if (!accessToken) throw new Error("No token returned");
 

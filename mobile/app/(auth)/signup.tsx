@@ -27,7 +27,7 @@ export default function Signup() {
       return Alert.alert("Error", "Please fill all fields");
     setLoading(true);
     try {
-      const res = await api.post("/auth/register", { name, email, password });
+      const res = await api.post("/api/auth/register", { name, email, password });
       const { accessToken } = res.data.data;
       if (!accessToken) throw new Error("No token returned");
 
