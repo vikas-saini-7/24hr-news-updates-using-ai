@@ -15,6 +15,7 @@ import {
   IconUser,
   IconUserCircle,
   IconLogin,
+  IconSparkles,
 } from "@tabler/icons-react";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -28,8 +29,8 @@ type NavItem = {
 
 const navigations: NavItem[] = [
   { name: "Feed", href: "/feed", icon: IconHome },
-  { name: "AI Summary", href: "/feed/ai-summary", icon: IconArticle },
   { name: "Top Stories", href: "/feed/top-stories", icon: IconFlame },
+  { name: "AI Summary", href: "/feed/ai-summary", icon: IconSparkles },
   {
     name: "Saved Articles",
     href: "/feed/saved",
