@@ -1,5 +1,6 @@
 import { IconBrightness, IconHome, IconSearch } from "@tabler/icons-react";
 import React from "react";
+import SearchBoxHeader from "./SearchBoxHeader";
 
 interface FeedHeaderProps {
   onToggleView: () => void;
@@ -12,16 +13,7 @@ const FeedHeader: React.FC<FeedHeaderProps> = ({ onToggleView }) => {
         {/* <div>Logo</div> */}
         <div></div>
         <div className="flex items-center space-x-4">
-          <div>
-            <input
-              type="text"
-              placeholder="Search..."
-              className="px-3 py-1 border rounded-xl border-gray-500/20 bg-gray-500/10 hidden md:block"
-            />
-            <div className="md:hidden h-10 flex items-center">
-              <IconSearch />
-            </div>
-          </div>
+          <SearchBoxHeader />
           <div>
             <IconBrightness />
           </div>
