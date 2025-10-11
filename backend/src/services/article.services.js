@@ -242,6 +242,7 @@ exports.getRelatedNewsArticles = async ({ articleId, limit = 3, userId }) => {
     .select({
       id: articles.id,
       title: articles.title,
+      slug: articles.slug,
       imageCover: articles.image_cover,
       sources: articles.sources,
       content: articles.content,
