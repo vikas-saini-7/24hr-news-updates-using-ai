@@ -1,20 +1,8 @@
-const { getNewsSummary } = require("../services/llm.service.js");
+// controllers/summary.controller.js
+const { streamNewsSummaryFromWeb } = require("../services/llm.service.js");
 
 exports.getSummary = async (req, res) => {
-  try {
-    const { model } = req.query;
-    const summary = await getNewsSummary({ model });
-
-    res.status(200).json({
-      success: true,
-      message: "Summary retrieved successfully",
-      data: summary,
-    });
-  } catch (error) {
-    console.error("error in getting summary:", error);
-    res.status(400).json({
-      success: false,
-      message: error.message,
-    });
-  }
+  const userQuery = req.query.query || "world news";
+  const length = req.query.length || "short";
+  await streamNewsSummaryFromWeb(userQuery, length, res);
 };

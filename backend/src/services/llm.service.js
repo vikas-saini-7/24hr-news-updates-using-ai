@@ -1,44 +1,52 @@
-const {
-  DefaultSummary,
-  ChatGPTSummary,
-  ClaudeSummary,
-  GeminiSummary,
-  GrokSummary,
-} = require("../utils/ai-based/summarize-with-ai");
+// services/llm.service.js
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-const AppError = require("../utils/global-error-handler/AppError");
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-const generateSummaryUsingModel = (model) => {
-  let summary;
-  switch (model) {
-    case "default":
-      summary = DefaultSummary();
-      break;
-    case "chatgpt":
-      summary = ChatGPTSummary();
-      break;
-    case "claude":
-      summary = ClaudeSummary();
-      break;
-    case "gemini":
-      summary = GeminiSummary();
-      break;
-    case "grok":
-      summary = GrokSummary();
-      break;
-    default:
-      throw new AppError("Please Select a valid model", 400);
+exports.streamNewsSummaryFromWeb = async (userQuery, length, res) => {
+  try {
+    // Choose model based on length parameter
+    const modelName =
+      length === "medium" ? "gemini-2.5-flash" : "gemini-2.5-flash-lite";
+
+    const model = genAI.getGenerativeModel({
+      model: modelName, // Supports live web search + streaming
+      // tools: [{ name: "web" }],
+    });
+
+    const lengthInstruction =
+      length === "medium"
+        ? "Provide a detailed summary with context and analysis."
+        : "Provide a brief, concise summary focusing on key points only.";
+
+    const prompt = `
+        You are a factual, concise news summarization assistant.
+        Search the **current web** for important verified events **from the last 24 hours only**.
+        Ignore older or speculative reports.
+        ${lengthInstruction}
+        Topic: "${userQuery}"
+        `;
+
+    // Start streaming
+    const stream = await model.generateContentStream(prompt);
+
+    // Set headers for streaming
+    res.setHeader("Content-Type", "text/plain; charset=utf-8");
+    res.setHeader("Transfer-Encoding", "chunked");
+
+    // Stream data chunks as they arrive
+    for await (const chunk of stream.stream) {
+      const text = chunk.text();
+      if (text) res.write(text);
+    }
+
+    res.end();
+  } catch (err) {
+    console.error("Error in streaming summary:", err);
+    if (!res.headersSent) {
+      res.status(500).send("Error streaming news summary");
+    } else {
+      res.end();
+    }
   }
-
-  return summary;
-};
-
-exports.getNewsSummary = async ({ model }) => {
-  if (!model) {
-    throw new AppError("Model is required", 400);
-  }
-
-  const summary = generateSummaryUsingModel(model);
-
-  return summary;
 };
