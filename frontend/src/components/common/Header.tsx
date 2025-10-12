@@ -1,11 +1,7 @@
 import { IconBrightness } from "@tabler/icons-react";
 import React from "react";
 
-interface HeaderProps {
-  onToggleView: () => void;
-}
-
-const Header: React.FC<HeaderProps> = ({ onToggleView }) => {
+const Header: React.FC = () => {
   return (
     <div className="bg-gray-500/10">
       <header className="container mx-auto p-4 flex justify-between items-center">
@@ -27,9 +23,6 @@ const Header: React.FC<HeaderProps> = ({ onToggleView }) => {
           </div>
           <div>
             <IconBrightness />
-          </div>
-          <div onClick={onToggleView} className="cursor-pointer">
-            Toggle View
           </div>
         </div>
       </header>

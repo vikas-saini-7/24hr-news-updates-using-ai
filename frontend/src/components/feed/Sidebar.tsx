@@ -4,27 +4,25 @@ import { usePathname } from "next/navigation";
 import React from "react";
 import {
   IconHome,
-  IconArticle,
   IconInfoCircle,
   IconMail,
-  IconSettings,
   IconLogout,
   IconCaretLeftFilled,
   IconFlame,
   IconBookmark,
-  IconUser,
   IconUserCircle,
   IconLogin,
   IconSparkles,
 } from "@tabler/icons-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useSidebar } from "@/contexts/SidebarContextProvider";
 
 type NavItem = {
   name: string;
   href: string;
   icon: React.ComponentType<{ size?: number; stroke?: number }>;
   isPrivate?: boolean;
-  hideWhenLoggedIn?: boolean; // only show when logged out
+  hideWhenLoggedIn?: boolean;
 };
 
 const navigations: NavItem[] = [
@@ -58,12 +56,8 @@ const bottomNavigations: NavItem[] = [
 
 const Sidebar = () => {
   const { user, logoutUser } = useAuth();
-  const [sidebarOpen, setSidebarOpen] = React.useState(true);
+  const { isSidebarOpen, toggleSidebar } = useSidebar();
   const pathname = usePathname();
-
-  const toggleSidebar = () => {
-    setSidebarOpen((prev) => !prev);
-  };
 
   const linkClasses = (href: string) => {
     const isActive =
@@ -82,10 +76,16 @@ const Sidebar = () => {
     logoutUser();
   };
 
+  const handleLinkClick = () => {
+    if (window.innerWidth < 768) {
+      toggleSidebar();
+    }
+  };
+
   return (
     <div
-      className={`w-[300px] h-screen bg-gray-500/10 p-6 flex flex-col justify-between relative transition-all duration-400 ${
-        sidebarOpen ? "ml-0" : "-ml-[300px]"
+      className={`w-[300px] h-screen bg-[#121212]/70 backdrop-blur-2xl md:bg-gray-500/10 p-6 flex flex-col justify-between transition-all duration-400 fixed md:relative z-50  ${
+        isSidebarOpen ? "ml-0" : "-ml-[300px]"
       }`}
     >
       <button
@@ -94,7 +94,7 @@ const Sidebar = () => {
       >
         <IconCaretLeftFilled
           className={`${
-            sidebarOpen ? "rotate-0" : "-rotate-180"
+            isSidebarOpen ? "rotate-0" : "-rotate-180"
           } text-white/60 transition-transform duration-400`}
         />
       </button>
@@ -108,7 +108,11 @@ const Sidebar = () => {
               .filter((item) => (item.isPrivate ? user : true))
               .map((item) => (
                 <li key={item.name}>
-                  <Link href={item.href} className={linkClasses(item.href)}>
+                  <Link
+                    href={item.href}
+                    className={linkClasses(item.href)}
+                    onClick={handleLinkClick}
+                  >
                     <item.icon size={20} stroke={1.5} />
                     {item.name}
                   </Link>
@@ -129,7 +133,11 @@ const Sidebar = () => {
             })
             .map((item) => (
               <li key={item.name}>
-                <Link href={item.href} className={linkClasses(item.href)}>
+                <Link
+                  href={item.href}
+                  className={linkClasses(item.href)}
+                  onClick={handleLinkClick}
+                >
                   <item.icon size={20} stroke={1.5} />
                   {item.name}
                 </Link>
