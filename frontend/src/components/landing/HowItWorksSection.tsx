@@ -108,8 +108,7 @@ const HowItWorksSection = () => {
           <div className="inline-flex items-center bg-gradient-to-r from-orange-500/10 to-red-500/10 rounded-full px-6 py-3 border border-orange-400/20">
             <div className="w-2 h-2 bg-orange-400 rounded-full animate-pulse mr-3"></div>
             <span className="text-white/80 text-sm">
-              <span className="hidden md:flex">Fully Automated • </span> No
-              Manual Intervention Required
+              No Manual Intervention Required
             </span>
           </div>
         </div>
