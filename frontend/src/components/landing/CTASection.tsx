@@ -36,7 +36,7 @@ const CTASection = () => {
 
           <Link href="/get-app">
             <LandingButton>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 md:py-2">
                 <IconDownload size={20} />
                 <span>Download App</span>
                 <IconArrowRight size={16} className="ml-1" />

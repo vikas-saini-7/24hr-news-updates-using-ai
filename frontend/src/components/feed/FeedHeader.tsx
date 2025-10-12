@@ -10,7 +10,7 @@ const FeedHeader: React.FC = () => {
         <div></div>
         <div className="flex items-center space-x-4">
           <SearchBoxHeader />
-          <div>
+          <div className="hidden">
             <IconBrightness />
           </div>
         </div>

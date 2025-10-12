@@ -5,7 +5,7 @@ import LaunchingScreen from "./LaunchingScreen";
 
 const LandingHeader = () => {
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto px-4">
       <div className="flex justify-between items-center py-4">
         <div className="flex items-center space-x-16">
           <Link href={"/"}>
@@ -18,12 +18,12 @@ const LandingHeader = () => {
               </li>
             </Link> */}
             <Link href={"/about"}>
-              <li className="hover:text-white cursor-pointer transition px-4 py-4">
+              <li className="hover:text-white cursor-pointer transition px-4 py-4 hidden md:flex">
                 About
               </li>
             </Link>
             <Link href={"/contact"}>
-              <li className="hover:text-white cursor-pointer transition px-4 py-4">
+              <li className="hover:text-white cursor-pointer transition px-4 py-4 hidden md:flex">
                 Contact
               </li>
             </Link>

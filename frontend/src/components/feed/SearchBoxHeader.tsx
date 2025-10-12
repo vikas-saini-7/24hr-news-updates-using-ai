@@ -31,7 +31,7 @@ const SearchBoxHeader = () => {
         placeholder="Search..."
         className="px-3 py-1 border rounded-xl border-gray-500/20 bg-gray-500/10 hidden md:block"
       />
-      <div className="md:hidden h-10 flex items-center">
+      <div className="md:hidden h-10 flex items-center opacity-0">
         <IconSearch />
       </div>
     </div>

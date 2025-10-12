@@ -7,7 +7,6 @@ import {
   IconHeart,
   IconHeartFilled,
 } from "@tabler/icons-react";
-import LandingButton from "../reusables/LandingButton";
 
 const LandingFooter = () => {
   const currentYear = new Date().getFullYear();
@@ -20,9 +19,7 @@ const LandingFooter = () => {
           {/* Brand Section */}
           <div className="lg:col-span-2">
             <div className="mb-6">
-              <h3 className="text-2xl font-bold text-white mb-4">
-                News.AI
-              </h3>
+              <h3 className="text-2xl font-bold text-white mb-4">News.AI</h3>
               <p className="text-white/60 max-w-md leading-relaxed">
                 Stay informed with the freshest news from around the world. Our
                 AI-powered platform ensures you never miss what matters most,
@@ -139,16 +136,17 @@ const LandingFooter = () => {
         </div>
 
         {/* Divider */}
-        <div className="border-t border-white/10 pt-8">
-          <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
+        <div className="border-t border-white/10 pt-8 px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-0">
             {/* Copyright */}
-            <div className="flex items-center space-x-2 text-white/50">
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-1 text-white/50 text-sm">
               <span>©{currentYear} News.AI | Made with</span>
               <IconHeartFilled size={16} className="text-red-400" />
               <span>for @everyone</span>
             </div>
 
-            <div className="text-center md:text-right text-white/50">
+            {/* Last updated */}
+            <div className="text-center sm:text-right text-white/50 text-sm">
               <span>Last updated: Just now</span>
             </div>
           </div>

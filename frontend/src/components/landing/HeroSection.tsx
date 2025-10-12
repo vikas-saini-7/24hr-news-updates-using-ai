@@ -6,7 +6,7 @@ import Link from "next/link";
 
 const Hero = () => {
   return (
-    <div className="py-20 px-4">
+    <div className="py-20 px-6">
       <div className="max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
@@ -33,23 +33,18 @@ const Hero = () => {
               ensuring you only see what's happening <em>right now</em>.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-6">
-              {/* <LandingButton onClick={() => (window.location.href = "/feed")}>
-                <div className="px-4 py-2 flex items-center gap-2">
-                  <IconAt size={18} />
-                  LAUNCH WEB APP
-                </div>
-              </LandingButton> */}
-
+            <div className="flex flex-col w-full md:flex-row gap-6">
               <LaunchingScreen />
 
-              <Link href="/get-app">
-                <LandingButton>
-                  <div className="px-0 py-2 flex items-center gap-2">
-                    <IconDownload size={18} /> GET MOBILE APP
-                  </div>
-                </LandingButton>
-              </Link>
+              <div className="flex items-center justify-center">
+                <Link href="/get-app">
+                  <LandingButton>
+                    <div className="px-0 md:py-2 flex items-start gap-2">
+                      <IconDownload size={18} /> GET MOBILE APP
+                    </div>
+                  </LandingButton>
+                </Link>
+              </div>
             </div>
           </div>
 
