@@ -40,7 +40,7 @@ export default function AISummaryPage() {
 
     try {
       const res = await fetch(
-        `http://localhost:8000/api/llm/summary?query=${encodeURIComponent(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/llm/summary?query=${encodeURIComponent(
           query
         )}&length=${summaryLength}`
       );
