@@ -64,7 +64,7 @@ const CTASection = () => {
         {/* Bottom Note */}
         <div className="mt-12 pt-8 border-t border-white/10">
           <p className="text-white/50 text-sm">
-            Free to start • No credit card required • Cancel anytime
+            All Features Free • Fully Automated • Trustful Coverage
           </p>
         </div>
       </div>
