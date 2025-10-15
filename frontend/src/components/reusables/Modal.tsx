@@ -32,7 +32,7 @@ export default function Modal({
         >
           <motion.div
             className={clsx(
-              "bg-[#151515] rounded-2xl shadow-xl max-w-2xl w-full mx-4 p-6 relative min-h-[80vh]",
+              "bg-[#151515] rounded-2xl shadow-xl max-w-2xl w-full mx-4 p-6 relative max-h-[90vh] overflow-y-auto",
               className
             )}
             initial={{ y: 40, opacity: 0 }}
