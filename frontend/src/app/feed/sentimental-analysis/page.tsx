@@ -11,6 +11,7 @@ import {
 } from "@tabler/icons-react";
 import { useAuth } from "@/contexts/AuthContext";
 import LandingButton from "@/components/reusables/LandingButton";
+import Link from "next/link";
 
 const Page = () => {
   const { user } = useAuth();
@@ -54,7 +55,7 @@ const Page = () => {
     typeof result?.score === "number" ? result.score : result?.confidence;
 
   return (
-    <div className="relative p-4 md:p-6 max-w-7xl mx-auto">
+    <div className="relative p-4 md:p-6 max-w-7xl mx-auto h-[calc(100vh-72px)]">
       {/* --- Main Content --- */}
       <div
         className={`transition-all duration-500 ${
@@ -136,13 +137,13 @@ const Page = () => {
           </div>
 
           {/* Usage Card - Right Side */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 bg-gray-500/10 rounded-2xl p-6 border border-gray-500/20">
             <div className="sticky top-6">
-              <div className="border border-gray-500/20 rounded-lg p-5 space-y-5">
+              <div className="rounded-lg space-y-5">
                 {/* Header */}
                 <div className="text-center space-y-1">
                   <div className="flex items-center justify-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-amber-400"></div>
+                    <div className="w-1.5 h-1.5 rounded-full bg-orange-400"></div>
                     <span className="text-sm font-medium">
                       {isSubscribed ? "Pro Plan" : "Free Plan"}
                     </span>
@@ -153,7 +154,7 @@ const Page = () => {
                 </div>
 
                 {!isSubscribed && (
-                  <div className="space-y-4">
+                  <div className="space-y-4 ">
                     <div className="text-center">
                       <div className="text-2xl font-light mb-1">
                         {usedRequests}
@@ -169,7 +170,7 @@ const Page = () => {
                         className={`absolute left-0 top-0 h-full rounded-full transition-all duration-500 ${
                           isQuotaExhausted
                             ? "bg-red-400"
-                            : "bg-gradient-to-r from-amber-400 to-amber-500"
+                            : "bg-gradient-to-r from-orange-400 via-red-400 to-amber-400"
                         }`}
                         style={{ width: `${usedPercent}%` }}
                       />
@@ -188,23 +189,23 @@ const Page = () => {
                 {!isSubscribed && (
                   <div className="space-y-3">
                     <div className="text-center">
-                      <div className="inline-flex items-center gap-1.5 text-amber-600 text-xs font-medium">
+                      <div className="inline-flex items-center gap-1.5 text-orange-400 text-xs font-medium">
                         <IconCrown size={12} />
-                        Go Pro
+                        Go Premium
                       </div>
                     </div>
 
                     <div className="space-y-2">
                       <div className="flex items-center gap-2 text-xs text-white/30">
-                        <IconCheck size={10} className="text-amber-500" />
+                        <IconCheck size={10} className="text-green-500" />
                         Unlimited requests
                       </div>
                       <div className="flex items-center gap-2 text-xs text-white/30">
-                        <IconBolt size={10} className="text-amber-500" />
-                        Priority processing
+                        <IconBolt size={10} className="text-green-500" />
+                        Advanced fefatures
                       </div>
                       <div className="flex items-center gap-2 text-xs text-white/30">
-                        <IconHeadset size={10} className="text-amber-500" />
+                        <IconHeadset size={10} className="text-green-500" />
                         Premium support
                       </div>
                     </div>
@@ -214,7 +215,7 @@ const Page = () => {
                 {!isSubscribed && (
                   <button
                     onClick={() => router.push("/subscribe")}
-                    className="w-full py-2.5 text-sm font-medium rounded-md bg-gradient-to-r from-amber-400 to-amber-500 text-black hover:from-amber-500 hover:to-amber-600 transition-all duration-200 shadow-sm"
+                    className="w-full cursor-pointer py-2.5 text-sm font-medium rounded-md bg-gradient-to-r from-orange-400 via-red-400 to-amber-400 text-black hover:from-orange-500 hover:via-red-500 hover:to-amber-500 transition-all duration-200 shadow-sm"
                   >
                     Upgrade
                   </button>
@@ -227,10 +228,12 @@ const Page = () => {
 
       {/* --- Overlay when not logged in --- */}
       {user === null && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm rounded-xl z-50">
+        <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-xs rounded-xl z-50">
           <div className="text-center space-y-3 text-white">
             <h2 className="text-lg font-semibold">Please login to continue</h2>
-            <LandingButton>Login</LandingButton>
+            <Link href={"/login"}>
+              <LandingButton>Login</LandingButton>
+            </Link>
           </div>
         </div>
       )}
