@@ -5,10 +5,17 @@ const {
   logoutUser,
 } = require("../services/auth.services.js");
 
+// const cookieOptions = {
+//   httpOnly: true,
+//   sameSite: "None",
+//   secure: process.env.NODE_ENV === "production",
+// };
+
 const cookieOptions = {
   httpOnly: true,
-  sameSite: "None",
+  sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
   secure: process.env.NODE_ENV === "production",
+  maxAge: 24 * 60 * 60 * 1000, // 1 day
 };
 
 // user regiteration

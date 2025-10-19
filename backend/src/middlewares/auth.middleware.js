@@ -1,9 +1,9 @@
 const { verifyAccessToken } = require("../utils/jwt");
 
-const authenticate = (req, res, next) => {
+const authenticate = async (req, res, next) => {
   try {
     // console.log("Authenticating token:", token);
-    const token = req.cookies?.accessToken;
+    const token = await req.cookies?.accessToken;
 
     if (!token) {
       return res
