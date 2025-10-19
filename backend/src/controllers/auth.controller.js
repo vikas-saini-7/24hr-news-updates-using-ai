@@ -14,7 +14,7 @@ const {
 const cookieOptions = {
   httpOnly: true,
   // sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
-  sameSite: process.env.NODE_ENV === "production" ? "none" : "Lax",
+  sameSite: "none",
   secure: process.env.NODE_ENV === "production",
   maxAge: 24 * 60 * 60 * 1000, // 1 day
 };
