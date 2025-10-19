@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { IconEye, IconEyeOff } from "@tabler/icons-react";
 
 const Page = () => {
   const { setUser } = useAuth();
@@ -12,6 +13,7 @@ const Page = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -30,7 +32,7 @@ const Page = () => {
       );
 
       // save user to context
-      setUser(res.data.data);
+      setUser(res.data.data.user);
 
       // redirect to /feed
       router.push("/feed");
@@ -61,16 +63,23 @@ const Page = () => {
               className="w-full px-4 py-2 bg-transparent border border-white/20 rounded-xl placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/40 transition"
             />
           </div>
-          <div>
+          <div className="relative">
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               id="password"
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full px-4 py-2 bg-transparent border border-white/20 rounded-xl placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/40 transition"
+              className="w-full px-4 py-2 pr-12 bg-transparent border border-white/20 rounded-xl placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/40 transition"
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-black/50 hover:text-black/80 transition"
+            >
+              {showPassword ? <IconEyeOff size={20} /> : <IconEye size={20} />}
+            </button>
           </div>
 
           {error && <p className="text-red-400 text-sm">{error}</p>}

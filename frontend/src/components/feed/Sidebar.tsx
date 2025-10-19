@@ -30,12 +30,10 @@ const navigations: NavItem[] = [
   { name: "Feed", href: "/feed", icon: IconHome },
   { name: "Top Stories", href: "/feed/top-stories", icon: IconFlame },
   { name: "AI Summary", href: "/feed/ai-summary", icon: IconSparkles },
-  { name: "Sentimental Analysis", href: "/feed/sentimental-analysis", icon: IconChartDonut },
   {
-    name: "Saved Articles",
-    href: "/feed/saved",
-    icon: IconBookmark,
-    isPrivate: true,
+    name: "Sentimental Analysis",
+    href: "/feed/sentimental-analysis",
+    icon: IconChartDonut,
   },
 ];
 
@@ -47,6 +45,13 @@ const bottomNavigations: NavItem[] = [
     hideWhenLoggedIn: true,
   },
   { name: "Contact", href: "/contact", icon: IconMail, hideWhenLoggedIn: true },
+
+  {
+    name: "Saved",
+    href: "/feed/saved",
+    icon: IconBookmark,
+    isPrivate: true,
+  },
   {
     name: "Profile",
     href: "/feed/profile",

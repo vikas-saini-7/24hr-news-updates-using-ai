@@ -13,8 +13,10 @@ const plans = [
       "Email notifications",
       "Mobile app access",
     ],
-    buttonText: "Get Started",
+    buttonText: "Current Plan",
     popular: false,
+    comingSoon: false,
+    currentPlan: true,
   },
   {
     name: "Premium",
@@ -31,6 +33,8 @@ const plans = [
     ],
     buttonText: "Go Premium",
     popular: true,
+    comingSoon: false,
+    currentPlan: false,
   },
   {
     name: "Family",
@@ -45,8 +49,10 @@ const plans = [
       "Parental controls",
       "Individual profiles",
     ],
-    buttonText: "Choose Family",
+    buttonText: "Coming Soon",
     popular: false,
+    comingSoon: true,
+    currentPlan: false,
   },
 ];
 
@@ -76,13 +82,33 @@ const page = () => {
             <div
               key={plan.name}
               className={`relative bg-gray-500/10 backdrop-blur-sm rounded-2xl p-8 border transition-all duration-300 hover:scale-105 hover:shadow-2xl flex flex-col h-full ${
-                plan.popular
+                plan.comingSoon
+                  ? "opacity-75 border-gray-500/20"
+                  : plan.popular
                   ? "border-orange-400 shadow-orange-400/20 shadow-lg"
                   : "border-gray-500/30 hover:border-gray-500/50"
               }`}
             >
+              {/* Current Plan Badge */}
+              {plan.currentPlan && (
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                  <span className="bg-gray-600 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                    Current Plan
+                  </span>
+                </div>
+              )}
+
+              {/* Coming Soon Badge */}
+              {plan.comingSoon && (
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                  <span className="bg-gray-600 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                    Coming Soon
+                  </span>
+                </div>
+              )}
+
               {/* Popular Badge */}
-              {plan.popular && (
+              {plan.popular && !plan.comingSoon && !plan.currentPlan && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                   <span className="bg-gradient-to-r from-orange-400 via-red-400 to-amber-400 text-black px-4 py-1 rounded-full text-sm font-semibold">
                     Most Popular
@@ -124,10 +150,15 @@ const page = () => {
 
               {/* CTA Button */}
               <button
-                className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-300 cursor-pointer mt-auto ${
-                  plan.popular
-                    ? "rounded-md bg-gradient-to-r from-orange-400 via-red-400 to-amber-400 text-black hover:from-orange-500 hover:via-red-500 hover:to-amber-500 transition-all duration-200 shadow-sm"
-                    : "bg-white/10 text-white hover:bg-white/20 border border-gray-500/30 hover:border-gray-500/50"
+                disabled={plan.comingSoon || plan.currentPlan}
+                className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-300 mt-auto ${
+                  plan.comingSoon
+                    ? "bg-gray-600/50 text-gray-400 cursor-not-allowed"
+                    : plan.currentPlan
+                    ? "bg-gray-600/50 text-gray-400 cursor-not-allowed"
+                    : plan.popular
+                    ? "rounded-md bg-gradient-to-r from-orange-400 via-red-400 to-amber-400 text-black hover:from-orange-500 hover:via-red-500 hover:to-amber-500 transition-all duration-200 shadow-sm cursor-pointer"
+                    : "bg-white/10 text-white hover:bg-white/20 border border-gray-500/30 hover:border-gray-500/50 cursor-pointer"
                 }`}
               >
                 {plan.buttonText}
