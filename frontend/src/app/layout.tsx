@@ -15,7 +15,7 @@ export const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "What happened in last 24hrs?",
+  title: "News.AI",
   description:
     "Stay updated with the latest news and events from the past 24 hours.",
 };

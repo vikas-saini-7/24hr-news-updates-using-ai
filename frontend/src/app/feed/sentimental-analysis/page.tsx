@@ -10,6 +10,9 @@ import {
   IconCrown,
   IconBolt,
   IconHeadset,
+  IconMoodHappy,
+  IconMoodSad,
+  IconMoodNeutral,
 } from "@tabler/icons-react";
 import { useAuth } from "@/contexts/AuthContext";
 import LandingButton from "@/components/reusables/LandingButton";
@@ -70,14 +73,14 @@ const Page = () => {
     }
   };
 
-  const getSentimentEmoji = (sentiment: string) => {
+  const getSentimentIcon = (sentiment: string) => {
     switch (sentiment?.toLowerCase()) {
       case "positive":
-        return "😊";
+        return <IconMoodHappy size={32} className="text-green-400" />;
       case "negative":
-        return "😔";
+        return <IconMoodSad size={32} className="text-red-400" />;
       default:
-        return "😐";
+        return <IconMoodNeutral size={32} className="text-yellow-400" />;
     }
   };
 
@@ -151,9 +154,7 @@ const Page = () => {
                   {/* Main Sentiment Result */}
                   <div className="border border-gray-500/20 rounded-lg px-4 py-4 bg-gray-500/5">
                     <div className="flex items-center gap-3 mb-3">
-                      <span className="text-2xl">
-                        {getSentimentEmoji(result.sentiment)}
-                      </span>
+                      {getSentimentIcon(result.sentiment)}
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
                           <span
