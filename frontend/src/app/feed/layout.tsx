@@ -1,23 +1,16 @@
-"use client";
-import React from "react";
-import Sidebar from "@/components/feed/Sidebar";
-import FeedHeader from "@/components/feed/FeedHeader";
-import SidebarContextProvider from "@/contexts/SidebarContextProvider";
+// app/feed/layout.tsx
+
+import FeedLayoutClient from "./FeedLayoutClient";
+
+export const metadata = {
+  title: "Feed | News.AI",
+  description: "Browse the latest curated news feed from News.AI.",
+};
 
 export default function FeedLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <SidebarContextProvider>
-      <div className="flex min-h-screen w-full flex-row">
-        <Sidebar />
-        <main className="flex-1 overflow-y-auto h-screen">
-          <FeedHeader />
-          {children}
-        </main>
-      </div>
-    </SidebarContextProvider>
-  );
+  return <FeedLayoutClient>{children}</FeedLayoutClient>;
 }
