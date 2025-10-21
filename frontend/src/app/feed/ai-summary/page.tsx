@@ -8,6 +8,7 @@ export default function AISummaryPage() {
   const [inputValue, setInputValue] = useState("");
   const [summary, setSummary] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [summaryLength, setSummaryLength] = useState("short");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -33,33 +34,58 @@ export default function AISummaryPage() {
   const fetchSummaryStreaming = async (query: string) => {
     setLoading(true);
     setSummary("");
+    setError("");
 
     try {
       const res = await fetch(
-        `${
-          process.env.NEXT_PUBLIC_BACKEND_URL
-        }/api/llm/summary?query=${encodeURIComponent(
-          query
-        )}&length=${summaryLength}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/llm/summary`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            query: query,
+            length: summaryLength,
+          }),
+        }
       );
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      }
+
       if (!res.body) {
-        setSummary("Streaming not supported in this browser.");
-        setLoading(false);
-        return;
+        throw new Error("Streaming not supported in this browser.");
       }
 
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let done = false;
+      let streamContent = "";
 
       while (!done) {
         const { value, done: readerDone } = await reader.read();
-        if (value) setSummary((prev) => prev + decoder.decode(value));
         done = readerDone;
+
+        if (value) {
+          const chunk = decoder.decode(value, { stream: !done });
+          if (chunk) {
+            streamContent += chunk;
+            setSummary(streamContent);
+          }
+        }
+      }
+
+      if (!streamContent.trim()) {
+        throw new Error("No content received from the AI service.");
       }
     } catch (err) {
-      console.error(err);
-      setSummary("Error fetching summary. Please try again.");
+      console.error("Fetch error:", err);
+      const errorMessage =
+        err instanceof Error ? err.message : "Unknown error occurred";
+      setError(errorMessage);
+      setSummary("");
     } finally {
       setLoading(false);
     }
@@ -67,7 +93,9 @@ export default function AISummaryPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (inputValue.trim()) fetchSummaryStreaming(inputValue.trim());
+    if (inputValue.trim() && !loading) {
+      fetchSummaryStreaming(inputValue.trim());
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -84,7 +112,17 @@ export default function AISummaryPage() {
       {/* Summary Output */}
       <div className="max-w-[1080px] w-full mx-auto flex-1 overflow-y-auto mb-4 p-4 sm:p-2 rounded-lg">
         {loading ? (
-          <p className="text-white/70 text-center">Generating Response...</p>
+          <div className="text-white/70 text-center flex flex-col items-center gap-2">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white/70"></div>
+            <p>Generating Response...</p>
+          </div>
+        ) : error ? (
+          <div className="text-center">
+            <div className="text-red-400 mb-4 p-4 bg-red-500/10 rounded-lg">
+              <p className="font-medium">Error occurred:</p>
+              <p className="text-sm mt-1">{error}</p>
+            </div>
+          </div>
         ) : summary ? (
           <ReactMarkdown
             children={summary}
@@ -176,7 +214,8 @@ export default function AISummaryPage() {
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyPress={handleKeyPress}
-          className="w-full bg-transparent border-none outline-none px-4 py-3 text-white text-sm sm:text-base rounded-2xl"
+          disabled={loading}
+          className="w-full bg-transparent border-none outline-none px-4 py-3 text-white text-sm sm:text-base rounded-2xl disabled:opacity-50"
         />
 
         {/* Bottom row: dropdown left, send button right */}
@@ -186,7 +225,8 @@ export default function AISummaryPage() {
             <button
               type="button"
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="flex items-center gap-1 px-3 py-2 text-white/70 hover:text-white transition-colors duration-200 text-sm sm:text-base rounded-2xl"
+              disabled={loading}
+              className="flex items-center gap-1 px-3 py-2 text-white/70 hover:text-white transition-colors duration-200 text-sm sm:text-base rounded-2xl disabled:opacity-50"
             >
               <span>
                 {
@@ -225,7 +265,8 @@ export default function AISummaryPage() {
           {/* Send button */}
           <button
             type="submit"
-            className="w-10 h-10 bg-white text-black hover:bg-gray-100 rounded-2xl flex items-center justify-center transition-colors duration-200"
+            disabled={loading || !inputValue.trim()}
+            className="w-10 h-10 bg-white text-black hover:bg-gray-100 rounded-2xl flex items-center justify-center transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="Submit"
           >
             <IconSend size={20} />

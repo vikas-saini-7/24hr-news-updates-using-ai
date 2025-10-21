@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
 import {
   IconCheck,
   IconCrown,
@@ -40,7 +42,13 @@ const Page = () => {
         { url: articleUrl },
         { withCredentials: true }
       );
-      setResult((res.data && (res.data.data ?? res.data)) || res.data);
+
+      // Properly extract the sentiment data from the response
+      if (res.data && res.data.success && res.data.data) {
+        setResult(res.data.data);
+      } else {
+        throw new Error("Invalid response format from server");
+      }
     } catch (err: any) {
       const message =
         err?.response?.data?.message || err?.message || "Failed to analyze";
@@ -50,15 +58,34 @@ const Page = () => {
     }
   }
 
-  const sentimentLabel = result?.sentiment || result?.label || null;
-  const sentimentScore =
-    typeof result?.score === "number" ? result.score : result?.confidence;
+  // Extract sentiment information from the properly structured result
+  const getSentimentColor = (sentiment: string) => {
+    switch (sentiment?.toLowerCase()) {
+      case "positive":
+        return "text-green-400";
+      case "negative":
+        return "text-red-400";
+      default:
+        return "text-yellow-400";
+    }
+  };
+
+  const getSentimentEmoji = (sentiment: string) => {
+    switch (sentiment?.toLowerCase()) {
+      case "positive":
+        return "😊";
+      case "negative":
+        return "😔";
+      default:
+        return "😐";
+    }
+  };
 
   return (
     <div className="relative p-4 md:p-6 max-w-7xl mx-auto h-[calc(100vh-72px)]">
       {/* --- Main Content --- */}
       <div
-        className={`transition-all duration-500 ${
+        className={`transition-all duration-500 pb-4 ${
           user === null ? "blur-sm pointer-events-none select-none" : ""
         }`}
       >
@@ -68,7 +95,7 @@ const Page = () => {
           </h1>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-full">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Main Content - Left Side */}
           <div className="lg:col-span-3">
             <form onSubmit={handleAnalyze} className="space-y-2">
@@ -102,44 +129,150 @@ const Page = () => {
 
             <div className="mt-6 space-y-3">
               {error && (
-                <div className="border border-gray-500/20 rounded-md px-3 py-2 text-sm">
-                  {error}
+                <div className="border border-red-500/20 rounded-md px-3 py-2 text-sm bg-red-500/10">
+                  <div className="text-red-400 font-medium">Error</div>
+                  <div className="text-red-300 text-xs mt-1">{error}</div>
                 </div>
               )}
 
               {isLoading && !error && (
-                <div className="border border-gray-500/20 rounded-md px-3 py-3 text-sm">
-                  Processing...
+                <div className="border border-blue-500/20 rounded-md px-3 py-3 text-sm bg-blue-500/10">
+                  <div className="flex items-center gap-2">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-400"></div>
+                    <span className="text-blue-400">
+                      Analyzing sentiment...
+                    </span>
+                  </div>
                 </div>
               )}
 
               {result && !error && (
-                <div className="border border-gray-500/20 rounded-md px-3 py-3">
-                  {(sentimentLabel ||
-                    typeof sentimentScore !== "undefined") && (
-                    <div className="mb-2 text-sm">
-                      {sentimentLabel && (
-                        <span className="font-medium">{sentimentLabel}</span>
-                      )}
-                      {typeof sentimentScore !== "undefined" && (
-                        <span className="ml-2 text-neutral-500">
-                          Score: {sentimentScore}
-                        </span>
-                      )}
+                <div className="space-y-4">
+                  {/* Main Sentiment Result */}
+                  <div className="border border-gray-500/20 rounded-lg px-4 py-4 bg-gray-500/5">
+                    <div className="flex items-center gap-3 mb-3">
+                      <span className="text-2xl">
+                        {getSentimentEmoji(result.sentiment)}
+                      </span>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`font-semibold text-lg ${getSentimentColor(
+                              result.sentiment
+                            )}`}
+                          >
+                            {result.sentiment}
+                          </span>
+                          <span className="text-sm text-neutral-400">
+                            ({result.confidence}% confidence)
+                          </span>
+                        </div>
+                        {result.articleTitle && (
+                          <div className="text-sm text-neutral-300 mt-1 line-clamp-2">
+                            {result.articleTitle}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  )}
-                  <pre className="whitespace-pre-wrap break-words text-xs">
-                    {JSON.stringify(result, null, 2)}
-                  </pre>
+
+                    {result.explanation && (
+                      <div className="border-t border-gray-500/20 pt-3 mt-3">
+                        <ReactMarkdown
+                          children={result.explanation}
+                          rehypePlugins={[rehypeRaw]}
+                          components={{
+                            p: ({ node, ...props }) => (
+                              <p
+                                className="text-neutral-200 text-sm leading-relaxed my-2"
+                                {...props}
+                              />
+                            ),
+                            h1: ({ node, ...props }) => (
+                              <h1
+                                className="text-lg font-semibold text-white my-3"
+                                {...props}
+                              />
+                            ),
+                            h2: ({ node, ...props }) => (
+                              <h2
+                                className="text-base font-semibold text-white my-2"
+                                {...props}
+                              />
+                            ),
+                            h3: ({ node, ...props }) => (
+                              <h3
+                                className="text-sm font-semibold text-white my-2"
+                                {...props}
+                              />
+                            ),
+                            li: ({ node, ...props }) => (
+                              <li
+                                className="text-neutral-200 text-sm ml-4 list-disc my-1"
+                                {...props}
+                              />
+                            ),
+                            ul: ({ node, ...props }) => (
+                              <ul className="my-2" {...props} />
+                            ),
+                            ol: ({ node, ...props }) => (
+                              <ol className="my-2" {...props} />
+                            ),
+                            strong: ({ node, ...props }) => (
+                              <strong
+                                className="font-semibold text-white"
+                                {...props}
+                              />
+                            ),
+                            em: ({ node, ...props }) => (
+                              <em
+                                className="italic text-neutral-300"
+                                {...props}
+                              />
+                            ),
+                            code: ({
+                              node,
+                              inline,
+                              className,
+                              children,
+                              ...props
+                            }: any) => (
+                              <code
+                                className={`${
+                                  inline
+                                    ? "bg-gray-700 text-white px-1 rounded text-xs"
+                                    : "block bg-gray-700 text-white p-2 rounded my-2 overflow-x-auto text-xs"
+                                }`}
+                                {...props}
+                              >
+                                {children}
+                              </code>
+                            ),
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Technical Details (Collapsible) */}
+                  <details className="border border-gray-500/20 rounded-lg">
+                    <summary className="px-4 py-3 cursor-pointer text-sm text-neutral-400 hover:text-neutral-300 select-none">
+                      Technical Details
+                    </summary>
+                    <div className="px-4 pb-3 border-t border-gray-500/20">
+                      <pre className="whitespace-pre-wrap break-words text-xs text-neutral-400 bg-gray-500/10 p-3 rounded mt-2 overflow-x-auto">
+                        {JSON.stringify(result, null, 2)}
+                      </pre>
+                    </div>
+                  </details>
                 </div>
               )}
             </div>
           </div>
 
           {/* Usage Card - Right Side */}
-          <div className="lg:col-span-1 bg-gray-500/10 rounded-2xl p-6 border border-gray-500/20">
-            <div className="sticky top-6">
-              <div className="rounded-lg space-y-5">
+          <div className="lg:col-span-1">
+            <div className="sticky top-22 bg-gray-500/10 rounded-2xl p-6 border border-gray-500/20 w-full">
+              <div className="space-y-5">
                 {/* Header */}
                 <div className="text-center space-y-1">
                   <div className="flex items-center justify-center gap-2">
