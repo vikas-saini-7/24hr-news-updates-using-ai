@@ -13,6 +13,7 @@ exports.fetchProfile = async ({ userId }) => {
       avatar: users.avatar,
       createdAt: users.created_at,
       updatedAt: users.updated_at,
+      plan: users.plan,
     })
     .from(users)
     .where(eq(users.id, userId))

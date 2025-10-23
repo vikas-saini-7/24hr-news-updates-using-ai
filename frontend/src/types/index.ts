@@ -15,4 +15,7 @@ export interface User {
   email: string;
   name: string;
   avatar: string;
+  plan: "FREE" | "PREMIUM";
+  createdAt: string;
+  updatedAt: string;
 }

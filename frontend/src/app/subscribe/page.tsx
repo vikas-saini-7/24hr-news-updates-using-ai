@@ -151,13 +151,13 @@ const page = () => {
               {/* CTA Button */}
               <button
                 disabled={plan.comingSoon || plan.currentPlan}
-                className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-300 mt-auto ${
+                className={`w-full py-3 px-6 rounded-2xl font-semibold transition-all duration-300 mt-auto ${
                   plan.comingSoon
                     ? "bg-gray-600/50 text-gray-400 cursor-not-allowed"
                     : plan.currentPlan
                     ? "bg-gray-600/50 text-gray-400 cursor-not-allowed"
                     : plan.popular
-                    ? "rounded-md bg-gradient-to-r from-orange-400 via-red-400 to-amber-400 text-black hover:from-orange-500 hover:via-red-500 hover:to-amber-500 transition-all duration-200 shadow-sm cursor-pointer"
+                    ? "rounded-2xl bg-gradient-to-r from-orange-400 via-red-400 to-amber-400 text-black hover:from-orange-500 hover:via-red-500 hover:to-amber-500 transition-all duration-200 shadow-sm cursor-pointer"
                     : "bg-white/10 text-white hover:bg-white/20 border border-gray-500/30 hover:border-gray-500/50 cursor-pointer"
                 }`}
               >

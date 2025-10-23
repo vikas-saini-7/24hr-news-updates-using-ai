@@ -27,6 +27,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const res = await axios.get(`${API_BASE}/api/profile`, {
           withCredentials: true,
         });
+        console.log("Profile fetch response:", res.data.data);
         setUser(res.data.data);
       } catch (err) {
         console.log(err)

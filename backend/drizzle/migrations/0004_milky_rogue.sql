@@ -1,0 +1,1 @@
+ALTER TABLE "usage" ALTER COLUMN "sentiment_count" SET DATA TYPE integer;

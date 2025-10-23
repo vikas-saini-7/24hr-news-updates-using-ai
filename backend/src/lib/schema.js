@@ -1,3 +1,5 @@
+const { integer } = require("drizzle-orm/pg-core");
+const { date } = require("drizzle-orm/pg-core");
 const {
   pgTable,
   uuid,
@@ -16,6 +18,28 @@ const users = pgTable("users", {
   password: varchar("password", { length: 255 }).notNull(),
   avatar: varchar("avatar", { length: 255 }), // optional profile pic
   created_at: timestamp("created_at").defaultNow().notNull(),
+  updated_at: timestamp("updated_at").defaultNow().notNull(),
+
+  plan: varchar("plan", { length: 50 }).default("FREE").notNull(),
+});
+
+const subscriptions = pgTable("subscriptions", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  user_id: uuid("user_id")
+    .references(() => users.id, { onDelete: "cascade" })
+    .notNull(),
+  status: varchar("status", { length: 50 }).notNull(), // active, canceled
+  created_at: timestamp("created_at").defaultNow().notNull(),
+  updated_at: timestamp("updated_at").defaultNow().notNull(),
+});
+
+const usage = pgTable("usage", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  user_id: uuid("user_id")
+    .references(() => users.id, { onDelete: "cascade" })
+    .notNull(),
+  sentiment_count: integer("sentiment_count").default(0).notNull(),
+  last_used_date: date("last_used_date"),
   updated_at: timestamp("updated_at").defaultNow().notNull(),
 });
 
@@ -59,4 +83,11 @@ const savedArticles = pgTable(
   })
 );
 
-module.exports = { users, articles, categories, savedArticles };
+module.exports = {
+  users,
+  articles,
+  categories,
+  savedArticles,
+  usage,
+  subscriptions,
+};

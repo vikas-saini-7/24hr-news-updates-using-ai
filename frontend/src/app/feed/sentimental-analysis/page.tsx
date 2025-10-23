@@ -1,45 +1,69 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import {
+  IconMoodHappy,
+  IconMoodSad,
+  IconMoodNeutral,
   IconCheck,
   IconCrown,
   IconBolt,
   IconHeadset,
-  IconMoodHappy,
-  IconMoodSad,
-  IconMoodNeutral,
 } from "@tabler/icons-react";
 import { useAuth } from "@/contexts/AuthContext";
 import LandingButton from "@/components/reusables/LandingButton";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
+const totalFreeRequests = 10;
+
+const getSentimentColor = (sentiment: string) => {
+  switch (sentiment?.toLowerCase()) {
+    case "positive":
+      return "text-green-400";
+    case "negative":
+      return "text-red-400";
+    default:
+      return "text-yellow-400";
+  }
+};
+
+const getSentimentIcon = (sentiment: string) => {
+  switch (sentiment?.toLowerCase()) {
+    case "positive":
+      return <IconMoodHappy size={32} className="text-green-400" />;
+    case "negative":
+      return <IconMoodSad size={32} className="text-red-400" />;
+    default:
+      return <IconMoodNeutral size={32} className="text-yellow-400" />;
+  }
+};
 
 const Page = () => {
+  const router = useRouter();
   const { user } = useAuth();
   const [articleUrl, setArticleUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<any>(null);
-  const router = useRouter();
-
-  // Mock state for UI only
-  const [isSubscribed] = useState(false);
-  const [remainingRequests] = useState(7);
-  const totalFreeRequests = 10;
-  const usedRequests = Math.max(0, totalFreeRequests - remainingRequests);
-  const usedPercent = Math.round((usedRequests / totalFreeRequests) * 100);
-  const isQuotaExhausted = !isSubscribed && remainingRequests <= 0;
 
   async function handleAnalyze(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
     setResult(null);
     setIsLoading(true);
+    if (isQuotaExhausted) {
+      setError(
+        "You have exhausted your free daily quota. Please upgrade to Pro for unlimited access."
+      );
+      setIsLoading(false);
+      return;
+    }
     try {
+      setUsedRequests((prev) => prev + 1);
       const res = await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/llm/sentiment`,
         { url: articleUrl },
@@ -61,28 +85,38 @@ const Page = () => {
     }
   }
 
-  // Extract sentiment information from the properly structured result
-  const getSentimentColor = (sentiment: string) => {
-    switch (sentiment?.toLowerCase()) {
-      case "positive":
-        return "text-green-400";
-      case "negative":
-        return "text-red-400";
-      default:
-        return "text-yellow-400";
-    }
-  };
+  const [isSubscribed] = useState(user?.plan === "PREMIUM");
+  const [usedRequests, setUsedRequests] = useState(0);
+  const [isQuotaExhausted, setIsQuotaExhausted] = useState(false);
 
-  const getSentimentIcon = (sentiment: string) => {
-    switch (sentiment?.toLowerCase()) {
-      case "positive":
-        return <IconMoodHappy size={32} className="text-green-400" />;
-      case "negative":
-        return <IconMoodSad size={32} className="text-red-400" />;
-      default:
-        return <IconMoodNeutral size={32} className="text-yellow-400" />;
+  const usedPercent = Math.min(
+    Math.round((usedRequests / totalFreeRequests) * 100),
+    100
+  );
+
+  useEffect(() => {
+    if (user) {
+      const fetchUsageData = async () => {
+        try {
+          const res = await axios.get(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/usage/sentiment`,
+            {
+              withCredentials: true,
+            }
+          );
+          console.log("Usage fetch response:", res.data.data);
+          setUsedRequests(res.data.data.sentiment_count);
+        } catch (error) {
+          console.error("Error fetching usage data:", error);
+        }
+      };
+      fetchUsageData();
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    setIsQuotaExhausted(usedRequests >= totalFreeRequests);
+  }, [usedRequests]);
 
   return (
     <div className="relative p-4 md:p-6 max-w-7xl mx-auto h-[calc(100vh-72px)]">
@@ -106,8 +140,8 @@ const Page = () => {
                 type="url"
                 value={articleUrl}
                 onChange={(e) => setArticleUrl(e.target.value)}
-                placeholder="Paste article URL here..."
-                className="w-full px-3 py-2 border rounded-xl border-gray-500/20 bg-gray-500/10 outline-none"
+                placeholder="https://example.com/article-to-analyze"
+                className="w-full px-3 py-3 border text-sm text-white/70 rounded-xl border-gray-500/20 bg-gray-500/10 outline-none"
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && articleUrl.trim()) {
                     e.currentTarget.form?.requestSubmit();
@@ -133,8 +167,8 @@ const Page = () => {
             <div className="mt-6 space-y-3">
               {error && (
                 <div className="border border-red-500/20 rounded-md px-3 py-2 text-sm bg-red-500/10">
-                  <div className="text-red-400 font-medium">Error</div>
-                  <div className="text-red-300 text-xs mt-1">{error}</div>
+                  {/* <div className="text-red-400 font-medium">Error</div> */}
+                  <div className="text-red-300 text-xs my-1">{error}</div>
                 </div>
               )}
 
@@ -336,12 +370,12 @@ const Page = () => {
                       </div>
                       <div className="flex items-center gap-2 text-xs text-white/30">
                         <IconBolt size={10} className="text-green-500" />
-                        Advanced fefatures
+                        Extra Premium features
                       </div>
-                      <div className="flex items-center gap-2 text-xs text-white/30">
+                      {/* <div className="flex items-center gap-2 text-xs text-white/30">
                         <IconHeadset size={10} className="text-green-500" />
                         Premium support
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 )}
@@ -349,7 +383,7 @@ const Page = () => {
                 {!isSubscribed && (
                   <button
                     onClick={() => router.push("/subscribe")}
-                    className="w-full cursor-pointer py-2.5 text-sm font-medium rounded-md bg-gradient-to-r from-orange-400 via-red-400 to-amber-400 text-black hover:from-orange-500 hover:via-red-500 hover:to-amber-500 transition-all duration-200 shadow-sm"
+                    className="w-full cursor-pointer py-2.5 text-sm font-medium rounded-xl bg-gradient-to-r from-orange-400 via-red-400 to-amber-400 text-black hover:from-orange-500 hover:via-red-500 hover:to-amber-500 transition-all duration-200 shadow-sm"
                   >
                     Upgrade
                   </button>

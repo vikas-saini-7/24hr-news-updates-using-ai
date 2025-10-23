@@ -23,14 +23,17 @@ const SearchBoxHeader = () => {
 
   return (
     <div>
-      <input
-        type="text"
-        value={search}
-        onKeyDown={handleSubmit}
-        onChange={(e) => setSearch(e.target.value)}
-        placeholder="Search..."
-        className="px-3 py-1 border rounded-xl border-gray-500/20 bg-gray-500/10 hidden md:block"
-      />
+      <div className="relative hidden md:block">
+        <input
+          type="text"
+          value={search}
+          onKeyDown={handleSubmit}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search..."
+          className="px-3 pr-10 py-1 border rounded-xl border-gray-500/20 bg-gray-500/10 w-full"
+        />
+        <IconSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4" />
+      </div>
       <div className="md:hidden h-10 flex items-center opacity-0">
         <IconSearch />
       </div>
