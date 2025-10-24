@@ -43,7 +43,10 @@ const usageLimiter = async (req, res, next) => {
 
     // 6. Check limit
     if (userUsage.sentiment_count >= plans[user.plan].sentiment_limit) {
-      throw new AppError(`Your daily limit expired. Subscribe for more usage.`, 429);
+      throw new AppError(
+        `Your daily limit expired. Subscribe for more usage.`,
+        429
+      );
     }
 
     // 7. Increment usage

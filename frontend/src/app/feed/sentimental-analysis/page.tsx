@@ -55,13 +55,13 @@ const Page = () => {
     setError(null);
     setResult(null);
     setIsLoading(true);
-    if (isQuotaExhausted) {
-      setError(
-        "You have exhausted your free daily quota. Please upgrade to Pro for unlimited access."
-      );
-      setIsLoading(false);
-      return;
-    }
+    // if (isQuotaExhausted) {
+    //   setError(
+    //     "You have exhausted your free daily quota. Please upgrade to Pro for unlimited access."
+    //   );
+    //   setIsLoading(false);
+    //   return;
+    // }
     try {
       setUsedRequests((prev) => prev + 1);
       const res = await axios.post(

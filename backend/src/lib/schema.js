@@ -28,7 +28,9 @@ const subscriptions = pgTable("subscriptions", {
   user_id: uuid("user_id")
     .references(() => users.id, { onDelete: "cascade" })
     .notNull(),
-  status: varchar("status", { length: 50 }).notNull(), // active, canceled
+  status: varchar("status", { length: 50 }).notNull(), // active, canceled, revoked
+  provider: varchar("provider", { length: 100 }).notNull(), // e.g., stripe
+  provider_subscription_id: varchar("provider_subscription_id", { length: 255 }).notNull(),
   created_at: timestamp("created_at").defaultNow().notNull(),
   updated_at: timestamp("updated_at").defaultNow().notNull(),
 });
