@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import LandingButton from "../reusables/LandingButton";
@@ -13,12 +13,17 @@ const LaunchingScreen = () => {
 
     setTimeout(() => {
       router.push("/feed");
-    }, 2000);
+    }, 1500);
   };
 
   return (
-    <>
-      <LandingButton onClick={handleLaunch}> <div className="flex items-center gap-2 sm:py-1 md:py-2"><IconRocket size={18}/> LAUNCH WEB APP</div></LandingButton>
+    <div className="hidden md:flex">
+      <LandingButton onClick={handleLaunch}>
+        {" "}
+        <div className="flex items-center gap-2 sm:py-1 md:py-1">
+          <IconRocket size={18} /> LAUNCH WEB APP
+        </div>
+      </LandingButton>
 
       {isLaunching && (
         <div className="fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center z-50">
@@ -43,7 +48,7 @@ const LaunchingScreen = () => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

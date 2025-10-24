@@ -23,6 +23,7 @@ const users = pgTable("users", {
   plan: varchar("plan", { length: 50 }).default("FREE").notNull(),
 });
 
+// subscriptions not used currently but can be useful for future extensions
 const subscriptions = pgTable("subscriptions", {
   id: uuid("id").defaultRandom().primaryKey(),
   user_id: uuid("user_id")
@@ -33,6 +34,20 @@ const subscriptions = pgTable("subscriptions", {
   provider_subscription_id: varchar("provider_subscription_id", { length: 255 }).notNull(),
   created_at: timestamp("created_at").defaultNow().notNull(),
   updated_at: timestamp("updated_at").defaultNow().notNull(),
+});
+
+const payments = pgTable("payments", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  user_id: uuid("user_id")
+    .references(() => users.id, { onDelete: "cascade" })
+    .notNull(),
+  amount: integer("amount").notNull(),
+  currency: varchar("currency", { length: 10 }).default("INR").notNull(),
+  provider: varchar("provider", { length: 100 }).default("razorpay").notNull(),
+  provider_order_id: varchar("provider_order_id", { length: 255 }),
+  provider_payment_id: varchar("provider_payment_id", { length: 255 }),
+  status: varchar("status", { length: 50 }).default("created").notNull(), // created, paid, failed
+  created_at: timestamp("created_at").defaultNow().notNull(),
 });
 
 const usage = pgTable("usage", {
@@ -92,4 +107,5 @@ module.exports = {
   savedArticles,
   usage,
   subscriptions,
+  payments
 };

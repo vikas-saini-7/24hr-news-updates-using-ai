@@ -8,6 +8,7 @@ const llmRoutes = require("./llm.routes.js");
 const profileRoutes = require("./profile.routes.js");
 const searchRoutes = require("./search.routes.js");
 const usageRoutes = require("./usage.routes.js");
+const paymentRoutes = require("./payment.routes.js");
 
 router.use("/auth", authRoutes);
 router.use("/articles/save", saveArticlesRoutes);
@@ -16,5 +17,6 @@ router.use("/llm", llmRoutes);
 router.use("/profile", profileRoutes);
 router.use("/search", searchRoutes);
 router.use("/usage", usageRoutes);
+router.use("/payment", paymentRoutes);
 
 module.exports = router;

@@ -1,4 +1,5 @@
 import LandingHeader from "@/components/landing/LandingHeader";
+import Link from "next/link";
 import React from "react";
 
 const plans = [
@@ -149,20 +150,26 @@ const page = () => {
               </ul>
 
               {/* CTA Button */}
-              <button
-                disabled={plan.comingSoon || plan.currentPlan}
-                className={`w-full py-3 px-6 rounded-2xl font-semibold transition-all duration-300 mt-auto ${
-                  plan.comingSoon
-                    ? "bg-gray-600/50 text-gray-400 cursor-not-allowed"
-                    : plan.currentPlan
-                    ? "bg-gray-600/50 text-gray-400 cursor-not-allowed"
-                    : plan.popular
-                    ? "rounded-2xl bg-gradient-to-r from-orange-400 via-red-400 to-amber-400 text-black hover:from-orange-500 hover:via-red-500 hover:to-amber-500 transition-all duration-200 shadow-sm cursor-pointer"
-                    : "bg-white/10 text-white hover:bg-white/20 border border-gray-500/30 hover:border-gray-500/50 cursor-pointer"
-                }`}
-              >
-                {plan.buttonText}
-              </button>
+              {plan.popular && !plan.comingSoon && !plan.currentPlan ? (
+                <Link href="/subscribe/go-premium">
+                  <button className="w-full py-3 px-6 rounded-2xl font-semibold transition-all duration-300 mt-auto bg-gradient-to-r from-orange-400 via-red-400 to-amber-400 text-black hover:from-orange-500 hover:via-red-500 hover:to-amber-500 shadow-sm cursor-pointer">
+                    {plan.buttonText}
+                  </button>
+                </Link>
+              ) : (
+                <button
+                  disabled={plan.comingSoon || plan.currentPlan}
+                  className={`w-full py-3 px-6 rounded-2xl font-semibold transition-all duration-300 mt-auto ${
+                    plan.comingSoon
+                      ? "bg-gray-600/50 text-gray-400 cursor-not-allowed"
+                      : plan.currentPlan
+                      ? "bg-gray-600/50 text-gray-400 cursor-not-allowed"
+                      : "bg-white/10 text-white hover:bg-white/20 border border-gray-500/30 hover:border-gray-500/50 cursor-pointer"
+                  }`}
+                >
+                  {plan.buttonText}
+                </button>
+              )}
             </div>
           ))}
         </div>
