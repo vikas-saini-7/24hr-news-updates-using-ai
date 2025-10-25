@@ -122,7 +122,7 @@ const ProfilePage = () => {
 
               {user.plan === "FREE" && (
                 <div className="mt-4">
-                  <Link href="/subscribe">
+                  <Link href="/go-premium">
                     <button className="w-full bg-gradient-to-r from-orange-400 via-red-400 to-amber-400 text-black font-bold py-3 rounded-xl hover:opacity-90 transition-opacity">
                       Upgrade to Premium
                     </button>

@@ -382,7 +382,7 @@ const Page = () => {
 
                 {!isSubscribed && (
                   <button
-                    onClick={() => router.push("/subscribe")}
+                    onClick={() => router.push("/go-premium")}
                     className="w-full cursor-pointer py-2.5 text-sm font-medium rounded-xl bg-gradient-to-r from-orange-400 via-red-400 to-amber-400 text-black hover:from-orange-500 hover:via-red-500 hover:to-amber-500 transition-all duration-200 shadow-sm"
                   >
                     Upgrade

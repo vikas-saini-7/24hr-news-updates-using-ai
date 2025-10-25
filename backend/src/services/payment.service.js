@@ -1,5 +1,7 @@
 const { db } = require("../lib/db");
 const Razorpay = require("razorpay");
+const crypto = require("crypto");
+const { payments, users } = require("../lib/schema");
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
@@ -7,6 +9,17 @@ const razorpay = new Razorpay({
 });
 
 exports.createPaymentOrder = async ({ userId, amount, currency }) => {
+  // const existingPayment = await db
+  //   .select()
+  //   .from(payments)
+  //   .where(eq(payments.user_id, userId))
+  //   .where(eq(payments.status, "paid"))
+  //   .limit(1);
+
+  // if (existingPayment.length > 0) {
+  //   throw new Error("You already have a premium plan!");
+  // }
+
   const order = await razorpay.orders.create({
     amount: amount * 100, // Amount in smallest currency unit
     currency: currency,
