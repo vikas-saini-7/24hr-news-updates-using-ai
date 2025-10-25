@@ -313,7 +313,7 @@ const Page = () => {
                   <div className="flex items-center justify-center gap-2">
                     <div className="w-1.5 h-1.5 rounded-full bg-orange-400"></div>
                     <span className="text-sm font-medium">
-                      {isSubscribed ? "Pro Plan" : "Free Plan"}
+                      {isSubscribed ? "Premium Plan" : "Free Plan"}
                     </span>
                   </div>
                   {!isSubscribed && (

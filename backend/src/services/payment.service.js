@@ -2,13 +2,14 @@ const { db } = require("../lib/db");
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
 const { payments, users } = require("../lib/schema");
+const { eq } = require("drizzle-orm");
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
-exports.createPaymentOrder = async ({ userId, amount, currency }) => {
+exports.createUserPayment = async ({ userId, amount, currency }) => {
   // const existingPayment = await db
   //   .select()
   //   .from(payments)
@@ -36,7 +37,7 @@ exports.createPaymentOrder = async ({ userId, amount, currency }) => {
   return order;
 };
 
-exports.verifyPayment = async ({
+exports.verifyUserPayment = async ({
   userId,
   razorpay_order_id,
   razorpay_payment_id,
@@ -49,16 +50,28 @@ exports.verifyPayment = async ({
     .digest("hex");
 
   if (expectedSign === razorpay_signature) {
-    // Update payment status
-    await db
-      .update(payments)
-      .set({ provider_payment_id: razorpay_payment_id, status: "paid" })
-      .where({ provider_order_id: razorpay_order_id });
+    try {
+      // Update payment status
+      await db
+        .update(payments)
+        .set({
+          provider_payment_id: razorpay_payment_id,
+          status: "paid",
+        })
+        .where(eq(payments.provider_order_id, razorpay_order_id));
 
-    // Upgrade user plan to PREMIUM
-    await db.update(users).set({ plan: "PREMIUM" }).where({ id: userId });
+      // Upgrade user plan to PREMIUM
+      await db
+        .update(users)
+        .set({ plan: "PREMIUM" })
+        .where(eq(users.id, userId));
 
-    return true;
+      console.log(`Payment verified and user ${userId} upgraded to PREMIUM`);
+      return true;
+    } catch (dbError) {
+      console.error("Database update error:", dbError);
+      throw new Error("Failed to update payment status and user plan");
+    }
   } else {
     throw new Error("Invalid payment signature");
   }

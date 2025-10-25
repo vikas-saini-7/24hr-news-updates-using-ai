@@ -1,11 +1,11 @@
-const { createPaymentOrder } = require("../services/payment.service.js");
+const { createUserPayment, verifyUserPayment } = require("../services/payment.service.js");
 
 exports.createPayment = async (req, res) => {
   try {
     const userId = req.user.id;
     const { amount, currency } = req.body;
 
-    const order = await createPaymentOrder({ userId, amount, currency });
+    const order = await createUserPayment({ userId, amount, currency });
 
     res.status(200).json({
       success: true,
@@ -28,7 +28,7 @@ exports.verifyPayment = async (req, res) => {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
       req.body;
 
-    await verifyPayment({
+    await verifyUserPayment({
       userId,
       razorpay_order_id,
       razorpay_payment_id,
