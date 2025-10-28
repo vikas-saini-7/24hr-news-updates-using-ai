@@ -12,6 +12,7 @@ import {
   IconCrown,
   IconBolt,
   IconHeadset,
+  IconInfinity,
 } from "@tabler/icons-react";
 import { useAuth } from "@/contexts/AuthContext";
 import LandingButton from "@/components/reusables/LandingButton";
@@ -88,6 +89,7 @@ const Page = () => {
   const [isSubscribed] = useState(user?.plan === "PREMIUM");
   const [usedRequests, setUsedRequests] = useState(0);
   const [isQuotaExhausted, setIsQuotaExhausted] = useState(false);
+  const [isLoadingUsage, setIsLoadingUsage] = useState(true);
 
   const usedPercent = Math.min(
     Math.round((usedRequests / totalFreeRequests) * 100),
@@ -98,6 +100,7 @@ const Page = () => {
     if (user) {
       const fetchUsageData = async () => {
         try {
+          setIsLoadingUsage(true);
           const res = await axios.get(
             `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/usage/sentiment`,
             {
@@ -108,6 +111,8 @@ const Page = () => {
           setUsedRequests(res.data.data.sentiment_count);
         } catch (error) {
           console.error("Error fetching usage data:", error);
+        } finally {
+          setIsLoadingUsage(false);
         }
       };
       fetchUsageData();
@@ -309,84 +314,96 @@ const Page = () => {
             <div className="sticky top-22 bg-gray-500/10 rounded-2xl p-6 border border-gray-500/20 w-full">
               <div className="space-y-5">
                 {/* Header */}
-                <div className="text-center space-y-1">
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-orange-400"></div>
-                    <span className="text-sm font-medium">
-                      {isSubscribed ? "Premium Plan" : "Free Plan"}
-                    </span>
-                  </div>
-                  {!isSubscribed && (
-                    <p className="text-xs text-neutral-500">Daily limit</p>
+                <div className="text-center">
+                  {isSubscribed ? (
+                    <div className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-gradient-to-r from-orange-400/20 via-red-400/20 to-amber-400/20 border border-orange-400/30">
+                      <IconCrown size={16} className="text-orange-400" />
+                      <span className="text-sm font-medium text-orange-400">
+                        Premium Plan
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-gray-500/20 border border-gray-500/30">
+                      <div className="w-1.5 h-1.5 rounded-full bg-gray-400"></div>
+                      <span className="text-sm font-medium text-gray-400">
+                        Free Plan
+                      </span>
+                    </div>
                   )}
                 </div>
 
-                {!isSubscribed && (
-                  <div className="space-y-4 ">
+                {isSubscribed ? (
+                  <div className="space-y-4">
+                    {/* Usage Stats for Premium */}
                     <div className="text-center">
-                      <div className="text-2xl font-light mb-1">
-                        {usedRequests}
-                        <span className="text-neutral-500 text-lg">
-                          /{totalFreeRequests}
+                      <div className="flex items-center justify-center gap-2 mb-2">
+                        <span className="text-2xl font-light text-white">
+                          {isLoadingUsage ? "-" : usedRequests}
                         </span>
+                        <span className="text-lg text-neutral-400">/</span>
+                        <IconInfinity size={24} className="text-orange-400" />
                       </div>
-                      <p className="text-xs text-neutral-500">requests used</p>
+                      <p className="text-xs text-neutral-400">requests today</p>
                     </div>
 
-                    <div className="relative h-1 rounded-full bg-gray-500/10">
-                      <div
-                        className={`absolute left-0 top-0 h-full rounded-full transition-all duration-500 ${
-                          isQuotaExhausted
-                            ? "bg-red-400"
-                            : "bg-gradient-to-r from-orange-400 via-red-400 to-amber-400"
-                        }`}
-                        style={{ width: `${usedPercent}%` }}
-                      />
+                    {/* Premium message */}
+                    <div className="text-center">
+                      <p className="text-xs text-neutral-500 uppercase font-medium">
+                        Enjoy Unlimited access
+                      </p>
                     </div>
-
-                    {isQuotaExhausted && (
+                  </div>
+                ) : (
+                  <>
+                    <div className="space-y-4">
                       <div className="text-center">
-                        <span className="text-xs text-red-500 font-medium">
-                          Limit reached
-                        </span>
+                        <div className="text-2xl font-light mb-1 text-white">
+                          {isLoadingUsage ? "-" : usedRequests}
+                          <span className="text-neutral-500 text-lg">
+                            /{totalFreeRequests}
+                          </span>
+                        </div>
+                        <p className="text-xs text-neutral-400">
+                          requests used
+                        </p>
                       </div>
-                    )}
-                  </div>
-                )}
 
-                {!isSubscribed && (
-                  <div className="space-y-3">
-                    <div className="text-center">
-                      <div className="inline-flex items-center gap-1.5 text-orange-400 text-xs font-medium">
-                        <IconCrown size={12} />
-                        Go Premium
+                      <div className="relative h-1 rounded-full bg-gray-500/20">
+                        <div
+                          className={`absolute left-0 top-0 h-full rounded-full transition-all duration-500 ${
+                            isQuotaExhausted
+                              ? "bg-red-400"
+                              : "bg-gradient-to-r from-orange-400 via-red-400 to-amber-400"
+                          }`}
+                          style={{ width: `${usedPercent}%` }}
+                        />
                       </div>
+
+                      {isQuotaExhausted && (
+                        <div className="text-center">
+                          <span className="text-xs text-red-400 font-medium">
+                            Daily limit reached
+                          </span>
+                        </div>
+                      )}
                     </div>
 
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2 text-xs text-white/30">
-                        <IconCheck size={10} className="text-green-500" />
-                        Unlimited requests
+                    <div className="space-y-3">
+                      <div className="text-center">
+                        <div className="inline-flex items-center gap-1.5 text-orange-400 text-xs font-medium">
+                          <IconCrown size={12} />
+                          Upgrade to Premium
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2 text-xs text-white/30">
-                        <IconBolt size={10} className="text-green-500" />
-                        Extra Premium features
-                      </div>
-                      {/* <div className="flex items-center gap-2 text-xs text-white/30">
-                        <IconHeadset size={10} className="text-green-500" />
-                        Premium support
-                      </div> */}
-                    </div>
-                  </div>
-                )}
 
-                {!isSubscribed && (
-                  <button
-                    onClick={() => router.push("/go-premium")}
-                    className="w-full cursor-pointer py-2.5 text-sm font-medium rounded-xl bg-gradient-to-r from-orange-400 via-red-400 to-amber-400 text-black hover:from-orange-500 hover:via-red-500 hover:to-amber-500 transition-all duration-200 shadow-sm"
-                  >
-                    Upgrade
-                  </button>
+                      <button
+                        onClick={() => router.push("/go-premium")}
+                        className="w-full cursor-pointer py-2.5 text-sm font-medium rounded-xl bg-gradient-to-r from-orange-400 via-red-400 to-amber-400 text-black hover:from-orange-500 hover:via-red-500 hover:to-amber-500 transition-all duration-200 shadow-sm"
+                      >
+                        Upgrade Now
+                      </button>
+                    </div>
+                  </>
                 )}
               </div>
             </div>

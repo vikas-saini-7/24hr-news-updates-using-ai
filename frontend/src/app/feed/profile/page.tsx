@@ -17,7 +17,7 @@ const ProfilePage = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="min-h-screen  flex items-center justify-center">
         <div className="text-white/60">Please log in to view your profile.</div>
       </div>
     );
@@ -30,7 +30,7 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen  text-white">
       <div className="max-w-6xl mx-auto px-6 py-12">
         {/* Header */}
         <div className="mb-8">
