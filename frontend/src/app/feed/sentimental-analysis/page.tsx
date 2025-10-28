@@ -17,7 +17,7 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import LandingButton from "@/components/reusables/LandingButton";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const totalFreeRequests = 10;
 
@@ -45,6 +45,7 @@ const getSentimentIcon = (sentiment: string) => {
 
 const Page = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user } = useAuth();
   const [articleUrl, setArticleUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -122,6 +123,14 @@ const Page = () => {
   useEffect(() => {
     setIsQuotaExhausted(usedRequests >= totalFreeRequests);
   }, [usedRequests]);
+
+  useEffect(() => {
+    // Extract URL from search params and set it in the input
+    const urlParam = searchParams.get("url");
+    if (urlParam) {
+      setArticleUrl(decodeURIComponent(urlParam));
+    }
+  }, [searchParams]);
 
   return (
     <div className="relative p-4 md:p-6 max-w-7xl mx-auto h-[calc(100vh-72px)]">

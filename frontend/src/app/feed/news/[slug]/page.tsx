@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { IconChevronLeft } from "@tabler/icons-react";
+import { IconChartDonut, IconChevronLeft } from "@tabler/icons-react";
 import ArticleCard from "@/components/feed/ArticleCard";
 import { Article } from "@/types";
 import axios from "axios";
@@ -63,16 +63,40 @@ export default async function NewsDetailsPage({ params }: Props) {
             height={500}
             width={500}
           />
-          <SaveButton articleId={article.id} initialSaved={article.isSaved} />
+          <div className="absolute top-2 right-2 flex gap-1">
+            <Link
+              href={`/feed/sentimental-analysis?url=${encodeURIComponent(
+                `https://24hr-news-updates-using-ai.vercel.app/feed/news/${article.slug}`
+              )}`}
+              className="bg-gradient-to-r from-orange-400 via-red-400 to-amber-400 hover:opacity-90 p-1.5 rounded-full transition-opacity shadow-lg"
+              title="Analyze sentiment"
+            >
+              <IconChartDonut size={14} className="text-black" />
+            </Link>
+            <SaveButton articleId={article.id} initialSaved={article.isSaved} />
+          </div>
         </div>
 
         <h1 className="text-2xl font-bold text-white">{article.title}</h1>
-        {article.category && (
-          <span className="mt-2 text-xs text-white/60">
-            #{article.category}
-          </span>
-        )}
+        <div className="mt-3 flex items-center gap-3">
+          {article.category && (
+            <span className="bg-white/10 hover:bg-white/20 text-white px-3 py-1 rounded-full text-xs font-medium transition-colors border border-white/10 hover:border-white/30">
+              #{article.category}
+            </span>
+          )}
+          <Link
+            href={`/feed/sentimental-analysis?url=${encodeURIComponent(
+              `https://24hr-news-updates-using-ai.vercel.app/feed/news/${article.slug}`
+            )}`}
+            className="bg-gradient-to-r from-orange-400 via-red-400 to-amber-400 hover:opacity-90 text-black px-3 py-1 rounded-full text-xs font-medium transition-opacity flex items-center gap-1.5 font-bold"
+            title="Analyze sentiment"
+          >
+            <IconChartDonut size={14} />
+            Analyze Sentiment
+          </Link>
+        </div>
         <p className="mt-4 text-base text-white/70">{article.summary}</p>
+
         <p className="mt-4 text-white/80 leading-relaxed whitespace-pre-line">
           {article.content}
         </p>

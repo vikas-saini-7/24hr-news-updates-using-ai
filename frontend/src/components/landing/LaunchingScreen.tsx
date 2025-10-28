@@ -17,7 +17,7 @@ const LaunchingScreen = () => {
   };
 
   return (
-    <div className="hidden md:flex">
+    <div className="flex">
       <LandingButton onClick={handleLaunch}>
         {" "}
         <div className="flex items-center gap-2 sm:py-1 md:py-1">
