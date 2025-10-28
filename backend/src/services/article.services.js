@@ -2,6 +2,7 @@ const { eq, desc, ne, asc, sql } = require("drizzle-orm");
 const { db } = require("../lib/db.js");
 const { articles, categories, savedArticles } = require("../lib/schema");
 const slugify = require("slugify");
+const AppError = require("../utils/global-error-handler/AppError.js");
 
 // utils
 const { summarizeContent } = require("../utils/ai-based/summarizeContent.js");

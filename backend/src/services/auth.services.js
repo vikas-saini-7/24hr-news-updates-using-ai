@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const { db } = require("../lib/db.js"); // drizzle db
 const { users } = require("../lib/schema"); // your drizzle table
 const { eq } = require("drizzle-orm"); // for where clause
+const AppError = require("../utils/global-error-handler/AppError.js");
 
 const {
   createAccessToken,
