@@ -64,7 +64,7 @@ export default async function NewsDetailsPage({ params }: Props) {
             width={500}
           />
           <div className="absolute top-2 right-2 flex gap-1">
-            <Link
+            {/* <Link
               href={`/feed/sentimental-analysis?url=${encodeURIComponent(
                 `https://24hr-news-updates-using-ai.vercel.app/feed/news/${article.slug}`
               )}`}
@@ -72,7 +72,7 @@ export default async function NewsDetailsPage({ params }: Props) {
               title="Analyze sentiment"
             >
               <IconChartDonut size={14} className="text-black" />
-            </Link>
+            </Link> */}
             <SaveButton articleId={article.id} initialSaved={article.isSaved} />
           </div>
         </div>
