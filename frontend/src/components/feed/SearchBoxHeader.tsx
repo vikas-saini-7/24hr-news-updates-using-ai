@@ -26,6 +26,8 @@ const SearchBoxHeader = () => {
       <div className="relative hidden md:block">
         <input
           type="text"
+          autoComplete="off"
+          name="search"
           value={search}
           onKeyDown={handleSubmit}
           onChange={(e) => setSearch(e.target.value)}
