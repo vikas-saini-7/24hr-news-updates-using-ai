@@ -30,7 +30,7 @@ const Page = () => {
       );
 
       // Save user in context
-      setUser(res.data.data);
+      setUser(res.data.data.user);
 
       // Redirect after success
       router.push("/feed");

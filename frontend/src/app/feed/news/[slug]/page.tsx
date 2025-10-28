@@ -88,7 +88,7 @@ export default async function NewsDetailsPage({ params }: Props) {
             href={`/feed/sentimental-analysis?url=${encodeURIComponent(
               `https://24hr-news-updates-using-ai.vercel.app/feed/news/${article.slug}`
             )}`}
-            className="bg-gradient-to-r from-orange-400 via-red-400 to-amber-400 hover:opacity-90 text-black px-3 py-1 rounded-full text-xs font-medium transition-opacity flex items-center gap-1.5 font-bold"
+            className="bg-gradient-to-r from-orange-400 via-red-400 to-amber-400 hover:opacity-90 text-black px-3 py-1 rounded-full text-xs transition-opacity flex items-center gap-1.5 font-bold"
             title="Analyze sentiment"
           >
             <IconChartDonut size={14} />
