@@ -19,10 +19,10 @@ const planComparison = [
     icon: IconFileText,
   },
   {
-    feature: "Resource Access",
+    feature: "Advanced Search",
     free: false,
     premium: true,
-    icon: IconDownload,
+    icon: IconSearch,
   },
   {
     feature: "Sentimental Analysis",
@@ -31,10 +31,10 @@ const planComparison = [
     icon: IconEye,
   },
   {
-    feature: "Advanced Search",
+    feature: "Resource Access",
     free: false,
     premium: true,
-    icon: IconSearch,
+    icon: IconDownload,
   },
   {
     feature: "Premium Support",
