@@ -28,6 +28,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const allowedOrigins = [
   "http://localhost:3000",
   "https://24hr-news-updates-using-ai.vercel.app",
+  "https://news-ai-world.vercel.app"
 ];
 app.use(
   cors({
