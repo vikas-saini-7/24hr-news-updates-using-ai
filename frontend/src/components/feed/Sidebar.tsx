@@ -14,6 +14,7 @@ import {
   IconLogin,
   IconSparkles,
   IconChartDonut,
+  IconFocus,
 } from "@tabler/icons-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSidebar } from "@/contexts/SidebarContextProvider";
@@ -28,6 +29,7 @@ type NavItem = {
 
 const navigations: NavItem[] = [
   { name: "Feed", href: "/feed", icon: IconHome },
+  { name: "Focus Mode", href: "/feed/focus-mode", icon: IconFocus },
   { name: "Top Stories", href: "/feed/top-stories", icon: IconFlame },
   { name: "AI Summary", href: "/feed/ai-summary", icon: IconSparkles },
   {

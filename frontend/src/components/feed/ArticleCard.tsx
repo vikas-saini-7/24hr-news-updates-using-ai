@@ -12,15 +12,16 @@ interface ArticleCardProps {
 
 const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
   return (
-    <div className="p-5 rounded-2xl bg-gray-500/10 transition shadow-lg hover:shadow-xl flex flex-col">
+    <div className="p-4 rounded-2xl bg-gray-500/10 transition shadow-lg hover:shadow-xl flex flex-col max-w-sm">
       {/* Cover Image */}
-      <div className="w-full relative mb-3 aspect-video">
+      <div className="w-full relative mb-3 aspect-[16/10]">
         <Image
           src={article.imageCover || placeHolderNewsImage}
           alt={article.title}
-          className="object-cover rounded-xl w-full aspect-video"
-          height={500}
-          width={500}
+          className="object-cover rounded-xl w-full h-full"
+          height={400}
+          width={640}
+          priority
         />
         {/* Save button overlay */}
         <SaveButton articleId={article.id} initialSaved={article.isSaved} />

@@ -1,12 +1,13 @@
 import { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
-import { IconChartDonut, IconChevronLeft } from "@tabler/icons-react";
+import { IconChartDonut } from "@tabler/icons-react";
 import ArticleCard from "@/components/feed/ArticleCard";
+import BackButton from "@/components/feed/BackButton";
 import { Article } from "@/types";
 import axios from "axios";
 import placeHolderNewsImage from "@/assets/placeholder-news.png";
 import SaveButton from "@/components/feed/SaveButton";
+import Link from "next/link";
 
 type Props = {
   params: { slug: string };
@@ -45,12 +46,7 @@ export default async function NewsDetailsPage({ params }: Props) {
   return (
     <div className="overflow-y-auto h-[calc(100vh-72px)] p-6">
       <div className="max-w-3xl mx-auto">
-        <Link
-          href="/feed"
-          className="text-blue-400 hover:underline text-sm flex items-center"
-        >
-          <IconChevronLeft className="mr-1" size={20} /> Back to News
-        </Link>
+        <BackButton />
       </div>
 
       {/* Article Card */}
